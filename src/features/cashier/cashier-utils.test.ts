@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { MenuProduct } from '../../types/domain'
+import type { MenuProduct, StaffOrder } from '../../types/domain'
 import {
   addProductToCart,
+  buildOrderReceipt,
   calculateChange,
   cartTotal,
   clampQuantity,
@@ -48,5 +49,71 @@ describe('kasa sepet kuralları', () => {
         generalNote: '',
       }),
     ).toContain('Alınan para toplamdan düşük')
+  })
+
+  it('teslim edilen online sipariş için eksiksiz fiş nesnesi üretir', () => {
+    const order: StaffOrder = {
+      id: 'online-1',
+      orderNumber: 1042,
+      source: 'ONLINE',
+      customerName: 'Ahmet Online',
+      customerPhone: '0555 123 4567',
+      deliveryLabel: 'Hemen',
+      targetDeliveryAt: '2026-11-19T12:00:00Z',
+      generalNote: null,
+      status: 'READY',
+      paymentStatus: 'PAID',
+      totalAmount: 60,
+      paidAmount: 60,
+      priorityOverride: false,
+      priorityOverrideReason: null,
+      cancellationReason: null,
+      createdAt: '2026-11-19T11:45:00Z',
+      updatedAt: '2026-11-19T11:55:00Z',
+      deliveredAt: null,
+      items: [
+        {
+          productId: 'p-1',
+          productName: 'Kaşarlı Tost',
+          categoryName: 'Tost',
+          unitPrice: 45,
+          quantity: 1,
+          lineNote: null,
+          lineTotal: 45,
+        },
+        {
+          productId: 'p-2',
+          productName: 'Ayran',
+          categoryName: 'İçecek',
+          unitPrice: 15,
+          quantity: 1,
+          lineNote: null,
+          lineTotal: 15,
+        },
+      ],
+      problems: [],
+      payments: [
+        {
+          id: 'pay-1',
+          paymentType: 'PAYMENT',
+          paymentMethod: 'CASH',
+          amount: 60,
+          receivedAmount: 100,
+          changeAmount: 40,
+          createdAt: '2026-11-19T11:55:00Z',
+          createdByName: 'Kasiyer Mehmet',
+          note: null,
+        },
+      ],
+    }
+
+    const receipt = buildOrderReceipt(order, 'Varsayılan Kasiyer')
+    expect(receipt.orderNumber).toBe(1042)
+    expect(receipt.totalAmount).toBe(60)
+    expect(receipt.paymentMethod).toBe('CASH')
+    expect(receipt.receivedAmount).toBe(100)
+    expect(receipt.changeAmount).toBe(40)
+    expect(receipt.cashierName).toBe('Kasiyer Mehmet')
+    expect(receipt.items).toHaveLength(2)
   })
 })

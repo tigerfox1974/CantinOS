@@ -1,6 +1,7 @@
 import { formatMoney, parseMoneyInput } from '../../lib/format'
 import type {
   CashierOrderInput,
+  CashierOrderResult,
   MenuProduct,
   OrderProblem,
   PaymentMethod,
@@ -192,4 +193,41 @@ export function buildCashierOrderInput(
   if (note.length > 0) input.generalNote = note
 
   return input
+}
+
+export function buildOrderReceipt(
+  order: StaffOrder,
+  fallbackCashierName = 'Kasiyer',
+  lastPayment?: { method: PaymentMethod; receivedAmount: number; changeAmount: number },
+): CashierOrderResult {
+  const payment =
+    order.payments && order.payments.length > 0
+      ? order.payments[order.payments.length - 1]
+      : null
+
+  const paymentMethod: PaymentMethod =
+    lastPayment?.method ?? payment?.paymentMethod ?? 'CASH'
+  const receivedAmount =
+    lastPayment?.receivedAmount ?? payment?.receivedAmount ?? order.totalAmount
+  const changeAmount =
+    lastPayment?.changeAmount ?? payment?.changeAmount ?? 0
+  const cashierName =
+    payment?.createdByName ?? fallbackCashierName
+
+  return {
+    orderId: order.id,
+    orderNumber: order.orderNumber,
+    createdAt: order.createdAt,
+    totalAmount: order.totalAmount,
+    paymentMethod,
+    receivedAmount,
+    changeAmount,
+    cashierName,
+    items: order.items.map((i) => ({
+      productName: i.productName,
+      quantity: i.quantity,
+      unitPrice: i.unitPrice,
+      lineTotal: i.lineTotal,
+    })),
+  }
 }

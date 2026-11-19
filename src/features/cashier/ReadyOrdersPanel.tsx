@@ -10,8 +10,9 @@ import {
 import { staffOrderApi } from '../../lib/api'
 import { toUserMessage } from '../../lib/errors'
 import { formatDateTime, formatMoney, parseMoneyInput } from '../../lib/format'
-import type { OrderProblem, StaffOrder } from '../../types/domain'
+import type { CashierOrderResult, OrderProblem, StaffOrder } from '../../types/domain'
 import {
+  buildOrderReceipt,
   calculateChange,
   canDeliver,
   isCashSufficient,
@@ -23,10 +24,19 @@ interface ReadyOrdersPanelProps {
   token: string
   orders: StaffOrder[]
   loading?: boolean
+  cashierName?: string
   onChanged: () => Promise<void>
+  onShowReceipt: (receipt: CashierOrderResult) => void
 }
 
-export function ReadyOrdersPanel({ token, orders, loading = false, onChanged }: ReadyOrdersPanelProps) {
+export function ReadyOrdersPanel({
+  token,
+  orders,
+  loading = false,
+  cashierName = 'Kasiyer',
+  onChanged,
+  onShowReceipt,
+}: ReadyOrdersPanelProps) {
   const [cashOrder, setCashOrder] = useState<StaffOrder | null>(null)
   const [cashReceived, setCashReceived] = useState('')
   const [deliverOrder, setDeliverOrder] = useState<StaffOrder | null>(null)
@@ -60,11 +70,22 @@ export function ReadyOrdersPanel({ token, orders, loading = false, onChanged }: 
 
     setBusyKey(`cash-${cashOrder.id}`)
     setError(null)
+    const targetOrder = cashOrder
+    const received = cashReceivedValue
+    const change = cashChange
     try {
-      await staffOrderApi.takePayment(token, cashOrder.id, 'CASH', cashReceivedValue)
+      await staffOrderApi.takePayment(token, targetOrder.id, 'CASH', received)
       setCashOrder(null)
       setCashReceived('')
       await onChanged()
+      // Ödeme alındığında fiş ekranını aç
+      onShowReceipt(
+        buildOrderReceipt(targetOrder, cashierName, {
+          method: 'CASH',
+          receivedAmount: received,
+          changeAmount: change,
+        }),
+      )
     } catch (cause) {
       setError(toUserMessage(cause))
       setCashOrder(null)
@@ -80,6 +101,14 @@ export function ReadyOrdersPanel({ token, orders, loading = false, onChanged }: 
     try {
       await staffOrderApi.takePayment(token, order.id, 'CARD', remainingAmount(order))
       await onChanged()
+      // Ödeme alındığında fiş ekranını aç
+      onShowReceipt(
+        buildOrderReceipt(order, cashierName, {
+          method: 'CARD',
+          receivedAmount: remainingAmount(order),
+          changeAmount: 0,
+        }),
+      )
     } catch (cause) {
       setError(toUserMessage(cause))
     } finally {
@@ -91,10 +120,14 @@ export function ReadyOrdersPanel({ token, orders, loading = false, onChanged }: 
     if (!deliverOrder || busy) return
     setBusyKey(`deliver-${deliverOrder.id}`)
     setError(null)
+    const targetOrder = deliverOrder
     try {
-      await staffOrderApi.setStatus(token, deliverOrder.id, 'DELIVERED')
+      await staffOrderApi.setStatus(token, targetOrder.id, 'DELIVERED')
+      const receipt = buildOrderReceipt(targetOrder, cashierName)
       setDeliverOrder(null)
       await onChanged()
+      // Teslim edilen her siparişte fiş ekranını otomatik aç
+      onShowReceipt(receipt)
     } catch (cause) {
       setError(toUserMessage(cause))
       setDeliverOrder(null)
@@ -295,6 +328,16 @@ export function ReadyOrdersPanel({ token, orders, loading = false, onChanged }: 
                 {order.paymentStatus === 'REFUND_PENDING' ? (
                   <span className="small text-danger">İade bekliyor.</span>
                 ) : null}
+
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-secondary"
+                  disabled={busy}
+                  onClick={() => onShowReceipt(buildOrderReceipt(order, cashierName))}
+                  title="Satış fişini görüntüle veya yazdır"
+                >
+                  🧾 Fiş
+                </button>
               </div>
             </article>
           )

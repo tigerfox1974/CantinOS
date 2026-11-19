@@ -79,7 +79,9 @@ export function CashierPage() {
           token={token}
           orders={ordersPoll.data ?? []}
           loading={ordersPoll.loading}
+          cashierName={session?.staff.displayName ?? 'Kasiyer'}
           onChanged={ordersPoll.refresh}
+          onShowReceipt={setReceipt}
         />
       </div>
 
