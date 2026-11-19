@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — İlk gerçek yönetici hesabı
+-- CANTINOS — İlk gerçek yönetici hesabı
 -- Kullanım: parolayı değiştirin, SQL Editor'de bir kez çalıştırın.
 -- Parola düz metin olarak saklanmaz; bcrypt ile hash'lenir.
 -- =====================================================================
@@ -10,8 +10,8 @@
 set search_path = public, extensions;
 
 insert into public.staff_accounts (email, display_name, role, password_hash)
-select 'yonetici@okulunuz.k12.tr', 'Okul Büfesi Yöneticisi', 'MANAGER',
+select 'yonetici@cantinos.com', 'CantinOS Yöneticisi', 'MANAGER',
        crypt('GucluBirParola!2026', gen_salt('bf', 10))
 where not exists (
-  select 1 from public.staff_accounts where lower(email) = 'yonetici@okulunuz.k12.tr'
+  select 1 from public.staff_accounts where lower(email) = 'yonetici@cantinos.com'
 );

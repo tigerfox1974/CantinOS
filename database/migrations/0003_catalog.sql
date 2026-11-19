@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0003 Kategori, ürün ve teslim zamanları
+-- CANTINOS — 0003 Kategori, ürün ve teslim zamanları
 -- =====================================================================
 
 create table if not exists public.categories (

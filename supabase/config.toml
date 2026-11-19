@@ -1,4 +1,4 @@
-project_id = "okul-bufesi"
+project_id = "cantinos"
 
 [functions.upload-product-image]
 verify_jwt = false

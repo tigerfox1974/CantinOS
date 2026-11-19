@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0004 Sipariş, ödeme, iptal, sorun, kapanış, olay
+-- CANTINOS — 0004 Sipariş, ödeme, iptal, sorun, kapanış, olay
 -- =====================================================================
 
 create table if not exists public.orders (

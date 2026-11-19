@@ -287,7 +287,7 @@ export function exportAnalyticsToExcel(
 
   const summarySheet = buildSheet(
     [
-      titleRow('Okul Büfesi — Analitik Rapor', 2),
+      titleRow('CantinOS — Analitik Rapor', 2),
       [textCell('Dönem', labelStyle), textCell(`${formatDate(meta.from)} – ${formatDate(meta.to)}`)],
       [textCell('Rapor', labelStyle), textCell(reportTitle)],
       [textCell('Oluşturulma', labelStyle), textCell(formatDateTime(new Date()))],
@@ -560,12 +560,12 @@ export function exportAnalyticsToExcel(
   XLSX.utils.book_append_sheet(workbook, cashSheet, 'Kasa Kapanışı')
 
   workbook.Props = {
-    Title: meta.title?.trim() || 'Okul Büfesi Analitik Raporu',
+    Title: meta.title?.trim() || 'CantinOS Analitik Raporu',
     Subject: `${formatDate(meta.from)} – ${formatDate(meta.to)}`,
-    Author: 'Okul Büfesi',
-    Company: 'Okul Büfesi',
+    Author: 'CantinOS',
+    Company: 'CantinOS',
     CreatedDate: new Date(),
   }
 
-  XLSX.writeFile(workbook, `okul-bufesi-rapor-${businessDate()}.xlsx`)
+  XLSX.writeFile(workbook, `cantinos-rapor-${businessDate()}.xlsx`)
 }

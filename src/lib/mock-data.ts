@@ -17,21 +17,21 @@ export interface MockStaffAccount {
 export const INITIAL_STAFF_ACCOUNTS: MockStaffAccount[] = [
   {
     id: 'staff-cashier-1',
-    email: 'kasa@okulbufesi.demo',
+    email: 'kasa@cantinos.demo',
     displayName: 'Demo Kasa',
     role: 'CASHIER',
     password: 'Kasa123!',
   },
   {
     id: 'staff-kitchen-1',
-    email: 'mutfak@okulbufesi.demo',
+    email: 'mutfak@cantinos.demo',
     displayName: 'Demo Mutfak',
     role: 'KITCHEN',
     password: 'Mutfak123!',
   },
   {
     id: 'staff-manager-1',
-    email: 'yonetici@okulbufesi.demo',
+    email: 'yonetici@cantinos.demo',
     displayName: 'Demo Yönetici',
     role: 'MANAGER',
     password: 'Yonetici123!',

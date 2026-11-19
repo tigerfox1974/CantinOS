@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0005 Herkese açık RPC'ler
+-- CANTINOS — 0005 Herkese açık RPC'ler
 -- =====================================================================
 
 create or replace function public.get_public_menu()

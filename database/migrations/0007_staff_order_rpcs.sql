@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0007 Personel sipariş RPC'leri
+-- CANTINOS — 0007 Personel sipariş RPC'leri
 -- =====================================================================
 
 create or replace function private.staff_order_items_json(p_order_id uuid, p_with_money boolean)

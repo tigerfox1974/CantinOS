@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0006 Personel oturum RPC'leri
+-- CANTINOS — 0006 Personel oturum RPC'leri
 -- =====================================================================
 
 create or replace function public.staff_login(p_email text, p_password text)

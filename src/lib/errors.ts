@@ -58,6 +58,6 @@ export function toUserMessage(error: unknown): string {
 export function logTechnicalError(context: string, error: unknown): void {
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console
-    console.error(`[okul-bufesi] ${context}`, error)
+    console.error(`[CantinOS] ${context}`, error)
   }
 }

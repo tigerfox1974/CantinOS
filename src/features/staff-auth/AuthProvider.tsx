@@ -4,7 +4,7 @@ import { logTechnicalError } from '../../lib/errors'
 import { isDemoActive, isSupabaseConfigured } from '../../lib/supabase'
 import type { LoginResult, StaffRole } from '../../types/domain'
 
-const STORAGE_KEY = 'okulbufesi.staff.session'
+const STORAGE_KEY = 'cantinos.staff.session'
 
 interface StoredSession {
   token: string

@@ -21,7 +21,7 @@ export function AppShell({ children, fluid = false }: { children: ReactNode; flu
         <div className={fluid ? 'container-fluid px-3 px-lg-4' : 'container'}>
           <NavLink className="navbar-brand d-flex align-items-center gap-2" to={roleHome(session.staff.role)}>
             <span aria-hidden="true">🍽️</span>
-            <span className="fw-semibold">Okul Büfesi</span>
+            <span className="fw-semibold">CantinOS</span>
           </NavLink>
 
           <div className="d-flex align-items-center gap-2 gap-md-3 ms-auto">

@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — SQL KABUL SENARYOLARI
+-- CANTINOS — SQL KABUL SENARYOLARI
 -- Supabase SQL Editor'de veya psql ile çalıştırın.
 -- Tüm işlemler tek transaction içindedir ve sonunda ROLLBACK yapar;
 -- kalıcı veri bırakmaz. Demo seed gerekmez.

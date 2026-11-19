@@ -56,9 +56,9 @@ export function DemoBadge() {
 
             <div className="bg-body-tertiary p-2 rounded mb-3 small">
               <div className="fw-semibold mb-1">Demo Giriş Bilgileri:</div>
-              <div>• Kasa: <code>kasa@okulbufesi.demo</code> / <code>Kasa123!</code></div>
-              <div>• Mutfak: <code>mutfak@okulbufesi.demo</code> / <code>Mutfak123!</code></div>
-              <div>• Yönetici: <code>yonetici@okulbufesi.demo</code> / <code>Yonetici123!</code></div>
+              <div>• Kasa: <code>kasa@cantinos.demo</code> / <code>Kasa123!</code></div>
+              <div>• Mutfak: <code>mutfak@cantinos.demo</code> / <code>Mutfak123!</code></div>
+              <div>• Yönetici: <code>yonetici@cantinos.demo</code> / <code>Yonetici123!</code></div>
             </div>
 
             <div className="d-flex gap-2">

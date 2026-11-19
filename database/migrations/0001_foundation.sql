@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0001 Temel yapı, yardımcı fonksiyonlar
+-- CANTINOS — 0001 Temel yapı, yardımcı fonksiyonlar
 -- Hedef: Supabase PostgreSQL 15+
 -- Saat dilimi: Asia/Nicosia
 -- =====================================================================

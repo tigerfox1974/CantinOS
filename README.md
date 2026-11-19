@@ -1,6 +1,6 @@
-# Okul Büfesi — Canlı Sipariş ve İşletme Yönetim Sistemi
+# CantinOS — Canlı Sipariş ve İşletme Yönetim Sistemi
 
-Okul büfesi için tek Vercel projesi, tek GitHub deposu ve tek Supabase projesiyle çalışan; müşteri, mutfak, kasa ve yönetici ekranlarının **aynı canlı veritabanı** üzerinden haberleştiği sipariş yönetim sistemi.
+CantinOS için tek Vercel projesi, tek GitHub deposu ve tek Supabase projesiyle çalışan; müşteri, mutfak, kasa ve yönetici ekranlarının **aynı canlı veritabanı** üzerinden haberleştiği sipariş yönetim sistemi.
 
 - Müşteri menüsü: `/`
 - Gizli sipariş takibi: `/takip/:siparisNo/:trackingToken`
@@ -83,7 +83,7 @@ Gereksinimler:
 - (İsteğe bağlı) Supabase CLI
 
 ```bash
-cd C:\Users\Fevzi\Projects\okul-bufesi
+cd C:\Users\Fevzi\Projects\CantinOS
 npm install
 ```
 
@@ -192,9 +192,9 @@ npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<service-role-key> --project-
 
 | Rol | E-posta | Parola |
 |---|---|---|
-| Kasa | `kasa@okulbufesi.demo` | `Kasa123!` |
-| Mutfak | `mutfak@okulbufesi.demo` | `Mutfak123!` |
-| Yönetici | `yonetici@okulbufesi.demo` | `Yonetici123!` |
+| Kasa | `kasa@cantinos.demo` | `Kasa123!` |
+| Mutfak | `mutfak@cantinos.demo` | `Mutfak123!` |
+| Yönetici | `yonetici@cantinos.demo` | `Yonetici123!` |
 
 Bu hesaplar üretimde otomatik oluşturulmaz. Üretimde seed dosyasını **çalıştırmayın**.
 
@@ -240,7 +240,7 @@ SQL kabul senaryoları: `tests/sql/acceptance.sql`. Supabase SQL Editor'de (veya
 ```bash
 git init
 git add .
-git commit -m "feat: okul bufesi siparis ve isletme yonetimi"
+git commit -m "feat: CantinOS siparis ve isletme yonetimi"
 git branch -M main
 git remote add origin https://github.com/<kullanici>/<repo>.git
 git push -u origin main
@@ -361,4 +361,4 @@ Müşteri takip ekranı, sipariş başarı modalı, bekleme ekranı, mutfak, kas
 
 ## 19. Lisans
 
-Bu proje okul büfesi kullanımı için geliştirilmiştir.
+Bu proje CantinOS olarak geliştirilmiştir.

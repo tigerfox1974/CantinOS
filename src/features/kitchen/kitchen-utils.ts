@@ -1,7 +1,7 @@
 import { minutesSince } from '../../lib/format'
 import type { StaffOrder } from '../../types/domain'
 
-export const KITCHEN_SOUND_STORAGE_KEY = 'okulbufesi.kitchen.sound'
+export const KITCHEN_SOUND_STORAGE_KEY = 'cantinos.kitchen.sound'
 
 export const DEFAULT_WARNING_MINUTES = 5
 export const DEFAULT_LATE_MINUTES = 10

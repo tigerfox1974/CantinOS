@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — TAM ŞEMA (otomatik üretildi)
+-- CANTINOS — TAM ŞEMA (otomatik üretildi)
 -- Kaynak: database/migrations/*.sql
 -- Yeniden üretmek için: npm run schema:build
 -- Hedef: Supabase PostgreSQL 15+ | Saat dilimi: Asia/Nicosia
@@ -8,7 +8,7 @@
 -- >>> 0001_foundation.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0001 Temel yapı, yardımcı fonksiyonlar
+-- CANTINOS — 0001 Temel yapı, yardımcı fonksiyonlar
 -- Hedef: Supabase PostgreSQL 15+
 -- Saat dilimi: Asia/Nicosia
 -- =====================================================================
@@ -102,7 +102,7 @@ $$;
 -- >>> 0002_staff_and_settings.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0002 Personel, oturum, ayarlar
+-- CANTINOS — 0002 Personel, oturum, ayarlar
 -- =====================================================================
 
 create table if not exists public.staff_accounts (
@@ -203,7 +203,7 @@ $$;
 -- >>> 0003_catalog.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0003 Kategori, ürün ve teslim zamanları
+-- CANTINOS — 0003 Kategori, ürün ve teslim zamanları
 -- =====================================================================
 
 create table if not exists public.categories (
@@ -277,7 +277,7 @@ where not exists (select 1 from public.delivery_slots);
 -- >>> 0004_orders.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0004 Sipariş, ödeme, iptal, sorun, kapanış, olay
+-- CANTINOS — 0004 Sipariş, ödeme, iptal, sorun, kapanış, olay
 -- =====================================================================
 
 create table if not exists public.orders (
@@ -632,7 +632,7 @@ $$;
 -- >>> 0005_public_rpcs.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0005 Herkese açık RPC'ler
+-- CANTINOS — 0005 Herkese açık RPC'ler
 -- =====================================================================
 
 create or replace function public.get_public_menu()
@@ -892,7 +892,7 @@ $$;
 -- >>> 0006_staff_auth.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0006 Personel oturum RPC'leri
+-- CANTINOS — 0006 Personel oturum RPC'leri
 -- =====================================================================
 
 create or replace function public.staff_login(p_email text, p_password text)
@@ -985,7 +985,7 @@ $$;
 -- >>> 0007_staff_order_rpcs.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0007 Personel sipariş RPC'leri
+-- CANTINOS — 0007 Personel sipariş RPC'leri
 -- =====================================================================
 
 create or replace function private.staff_order_items_json(p_order_id uuid, p_with_money boolean)
@@ -1758,7 +1758,7 @@ $$;
 -- >>> 0008_staff_admin_rpcs.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0008 Yönetici tanım RPC'leri
+-- CANTINOS — 0008 Yönetici tanım RPC'leri
 -- =====================================================================
 
 create or replace function public.staff_toggle_online_ordering(p_token text, p_enabled boolean)
@@ -2236,7 +2236,7 @@ $$;
 -- >>> 0009_reports.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0009 Rapor, gün sonu ve analitik RPC'leri
+-- CANTINOS — 0009 Rapor, gün sonu ve analitik RPC'leri
 -- =====================================================================
 
 create or replace function public.staff_daily_summary(p_token text, p_date date default null)
@@ -2734,7 +2734,7 @@ $$;
 -- >>> 0010_rls_and_grants.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0010 RLS, tablo yetkileri ve RPC grant'leri
+-- CANTINOS — 0010 RLS, tablo yetkileri ve RPC grant'leri
 -- İlke: tablolara doğrudan erişim YOK; yalnız doğrulanmış RPC'ler.
 -- =====================================================================
 
@@ -2845,7 +2845,7 @@ comment on table public.cash_closings is 'Değiştirilemez gün sonu kasa kapan�
 -- >>> 0011_storage.sql
 
 -- =====================================================================
--- OKUL BÜFESİ — 0011 Ürün görseli Storage bucket'ı
+-- CANTINOS — 0011 Ürün görseli Storage bucket'ı
 -- Supabase Storage yoksa (düz PostgreSQL) sessizce atlanır.
 -- =====================================================================
 

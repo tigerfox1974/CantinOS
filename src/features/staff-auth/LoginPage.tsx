@@ -42,7 +42,7 @@ export function LoginPage() {
               🍽️
             </div>
             <h1 className="h4 mt-3 mb-1">Personel Girişi</h1>
-            <p className="text-body-secondary mb-0">Okul Büfesi İşletme Yönetimi</p>
+            <p className="text-body-secondary mb-0">CantinOS İşletme Yönetimi</p>
           </div>
 
           {error ? (
@@ -59,34 +59,34 @@ export function LoginPage() {
                   type="button"
                   className="btn btn-sm btn-outline-primary text-start d-flex justify-content-between align-items-center"
                   onClick={() => {
-                    setEmail('kasa@okulbufesi.demo')
+                    setEmail('kasa@cantinos.demo')
                     setPassword('Kasa123!')
                   }}
                 >
                   <span>🛒 <strong>Kasa (Kantin)</strong></span>
-                  <span className="small text-body-secondary">kasa@okulbufesi.demo</span>
+                  <span className="small text-body-secondary">kasa@cantinos.demo</span>
                 </button>
                 <button
                   type="button"
                   className="btn btn-sm btn-outline-warning text-start d-flex justify-content-between align-items-center"
                   onClick={() => {
-                    setEmail('mutfak@okulbufesi.demo')
+                    setEmail('mutfak@cantinos.demo')
                     setPassword('Mutfak123!')
                   }}
                 >
                   <span>🍳 <strong>Mutfak</strong></span>
-                  <span className="small text-body-secondary">mutfak@okulbufesi.demo</span>
+                  <span className="small text-body-secondary">mutfak@cantinos.demo</span>
                 </button>
                 <button
                   type="button"
                   className="btn btn-sm btn-outline-success text-start d-flex justify-content-between align-items-center"
                   onClick={() => {
-                    setEmail('yonetici@okulbufesi.demo')
+                    setEmail('yonetici@cantinos.demo')
                     setPassword('Yonetici123!')
                   }}
                 >
                   <span>📊 <strong>Yönetici</strong></span>
-                  <span className="small text-body-secondary">yonetici@okulbufesi.demo</span>
+                  <span className="small text-body-secondary">yonetici@cantinos.demo</span>
                 </button>
               </div>
             </div>

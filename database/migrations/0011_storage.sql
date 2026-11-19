@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0011 Ürün görseli Storage bucket'ı
+-- CANTINOS — 0011 Ürün görseli Storage bucket'ı
 -- Supabase Storage yoksa (düz PostgreSQL) sessizce atlanır.
 -- =====================================================================
 

@@ -10,7 +10,7 @@ interface ReceiptProps {
 export function Receipt({ receipt, size }: ReceiptProps) {
   return (
     <div className={`receipt receipt-${size}`}>
-      <h1>Okul Büfesi</h1>
+      <h1>CantinOS</h1>
       <div className="receipt-meta">
         <div>Sipariş No: {receipt.orderNumber}</div>
         <div>{formatDateTime(receipt.createdAt)}</div>

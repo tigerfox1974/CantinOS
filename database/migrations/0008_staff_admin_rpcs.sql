@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0008 Yönetici tanım RPC'leri
+-- CANTINOS — 0008 Yönetici tanım RPC'leri
 -- =====================================================================
 
 create or replace function public.staff_toggle_online_ordering(p_token text, p_enabled boolean)

@@ -15,7 +15,7 @@ if (files.length === 0) {
 }
 
 const header = `-- =====================================================================
--- OKUL BÜFESİ — TAM ŞEMA (otomatik üretildi)
+-- CANTINOS — TAM ŞEMA (otomatik üretildi)
 -- Kaynak: database/migrations/*.sql
 -- Yeniden üretmek için: npm run schema:build
 -- Hedef: Supabase PostgreSQL 15+ | Saat dilimi: Asia/Nicosia

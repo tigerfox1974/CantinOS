@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0009 Rapor, gün sonu ve analitik RPC'leri
+-- CANTINOS — 0009 Rapor, gün sonu ve analitik RPC'leri
 -- =====================================================================
 
 create or replace function public.staff_daily_summary(p_token text, p_date date default null)

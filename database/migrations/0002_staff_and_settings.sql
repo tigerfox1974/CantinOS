@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0002 Personel, oturum, ayarlar
+-- CANTINOS — 0002 Personel, oturum, ayarlar
 -- =====================================================================
 
 create table if not exists public.staff_accounts (

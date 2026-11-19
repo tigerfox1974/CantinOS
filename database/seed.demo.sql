@@ -1,25 +1,25 @@
 -- =====================================================================
--- OKUL BÜFESİ — DEMO SEED
+-- CANTINOS — DEMO SEED
 -- YALNIZ geliştirme/demo ortamı içindir. Üretimde çalıştırmayın.
 -- Demo personel:
---   kasa@okulbufesi.demo / Kasa123!
---   mutfak@okulbufesi.demo / Mutfak123!
---   yonetici@okulbufesi.demo / Yonetici123!
+--   kasa@cantinos.demo / Kasa123!
+--   mutfak@cantinos.demo / Mutfak123!
+--   yonetici@cantinos.demo / Yonetici123!
 -- =====================================================================
 
 set search_path = public, extensions;
 
 insert into public.staff_accounts (email, display_name, role, password_hash)
-select 'kasa@okulbufesi.demo', 'Demo Kasa', 'CASHIER', crypt('Kasa123!', gen_salt('bf', 10))
-where not exists (select 1 from public.staff_accounts where lower(email) = 'kasa@okulbufesi.demo');
+select 'kasa@cantinos.demo', 'Demo Kasa', 'CASHIER', crypt('Kasa123!', gen_salt('bf', 10))
+where not exists (select 1 from public.staff_accounts where lower(email) = 'kasa@cantinos.demo');
 
 insert into public.staff_accounts (email, display_name, role, password_hash)
-select 'mutfak@okulbufesi.demo', 'Demo Mutfak', 'KITCHEN', crypt('Mutfak123!', gen_salt('bf', 10))
-where not exists (select 1 from public.staff_accounts where lower(email) = 'mutfak@okulbufesi.demo');
+select 'mutfak@cantinos.demo', 'Demo Mutfak', 'KITCHEN', crypt('Mutfak123!', gen_salt('bf', 10))
+where not exists (select 1 from public.staff_accounts where lower(email) = 'mutfak@cantinos.demo');
 
 insert into public.staff_accounts (email, display_name, role, password_hash)
-select 'yonetici@okulbufesi.demo', 'Demo Yönetici', 'MANAGER', crypt('Yonetici123!', gen_salt('bf', 10))
-where not exists (select 1 from public.staff_accounts where lower(email) = 'yonetici@okulbufesi.demo');
+select 'yonetici@cantinos.demo', 'Demo Yönetici', 'MANAGER', crypt('Yonetici123!', gen_salt('bf', 10))
+where not exists (select 1 from public.staff_accounts where lower(email) = 'yonetici@cantinos.demo');
 
 insert into public.categories (name, sort_order)
 select * from (values

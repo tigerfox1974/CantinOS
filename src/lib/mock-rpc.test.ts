@@ -15,7 +15,7 @@ describe('yerel mock rpc motoru', () => {
   })
 
   it('demo personel hesabı ile oturum açabilir', async () => {
-    const loginRes = await staffAuthApi.login('kasa@okulbufesi.demo', 'Kasa123!')
+    const loginRes = await staffAuthApi.login('kasa@cantinos.demo', 'Kasa123!')
     expect(loginRes.token).toBeDefined()
     expect(loginRes.staff.role).toBe('CASHIER')
     expect(loginRes.staff.displayName).toBe('Demo Kasa')
@@ -25,7 +25,7 @@ describe('yerel mock rpc motoru', () => {
   })
 
   it('geçersiz parolada hata fırlatır', async () => {
-    await expect(staffAuthApi.login('kasa@okulbufesi.demo', 'yanlis')).rejects.toThrow(
+    await expect(staffAuthApi.login('kasa@cantinos.demo', 'yanlis')).rejects.toThrow(
       'E-posta veya parola hatalı.',
     )
   })
@@ -51,7 +51,7 @@ describe('yerel mock rpc motoru', () => {
   })
 
   it('kasa personeli sipariş oluşturup durum güncelleyebilir', async () => {
-    const loginRes = await staffAuthApi.login('kasa@okulbufesi.demo', 'Kasa123!')
+    const loginRes = await staffAuthApi.login('kasa@cantinos.demo', 'Kasa123!')
     const menu = await publicApi.getMenu()
     const prod = menu.categories[0].products[0]
 

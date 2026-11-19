@@ -1,9 +1,9 @@
 {
-  "name": "okul-bufesi",
+  "name": "cantinos",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Okul büfesi canlı sipariş ve işletme yönetim sistemi",
+  "description": "CantinOS canlı sipariş ve işletme yönetim sistemi",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

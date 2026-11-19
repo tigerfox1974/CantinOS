@@ -33,7 +33,7 @@ import {
   getInitialOrders,
 } from './mock-data'
 
-const MOCK_STORAGE_KEY = 'cantinos_demo_store_v1'
+const MOCK_STORAGE_KEY = 'cantinos_demo_store_v2'
 
 interface MockStore {
   staffAccounts: MockStaffAccount[]
@@ -80,10 +80,15 @@ let memoryStore: MockStore | null = null
 function getStore(): MockStore {
   if (memoryStore) return memoryStore
   try {
-    const raw = typeof window !== 'undefined' ? window.localStorage.getItem(MOCK_STORAGE_KEY) : null
-    if (raw) {
-      memoryStore = JSON.parse(raw) as MockStore
-      return memoryStore
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('cantinos_demo_store_v1')
+      const raw = window.localStorage.getItem(MOCK_STORAGE_KEY)
+      if (raw) {
+        memoryStore = JSON.parse(raw) as MockStore
+        // Personel hesaplarını her zaman güncel kod tanımlarıyla eşitle
+        memoryStore.staffAccounts = INITIAL_STAFF_ACCOUNTS
+        return memoryStore
+      }
     }
   } catch {
     // fallback
@@ -333,9 +338,15 @@ export async function mockRpc<T>(name: string, params: Record<string, unknown> =
       const email = String(params.p_email || '').trim().toLowerCase()
       const password = String(params.p_password || '')
 
-      const account = store.staffAccounts.find(
-        (a) => a.email.toLowerCase() === email && a.password === password,
-      )
+      const normalize = (val: string) => val.replace('@okulbufesi.demo', '@cantinos.demo').toLowerCase()
+      const normalizedInput = normalize(email)
+
+      const account = store.staffAccounts.find((a) => {
+        return (
+          (a.email.toLowerCase() === email || normalize(a.email) === normalizedInput) &&
+          a.password === password
+        )
+      })
 
       if (!account) {
         throw new AppError('E-posta veya parola hatalı.')

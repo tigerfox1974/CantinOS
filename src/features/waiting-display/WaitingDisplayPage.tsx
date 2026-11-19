@@ -38,7 +38,7 @@ export function WaitingDisplayPage() {
       <header className="waiting-header">
         <div>
           <p className="text-uppercase small mb-1" style={{ letterSpacing: '0.18em', color: 'rgba(255,255,255,0.6)' }}>
-            Okul Büfesi
+            CantinOS
           </p>
           <h1 className="h2 fw-bold mb-0">Sipariş Ekranı</h1>
         </div>

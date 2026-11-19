@@ -1,5 +1,5 @@
 -- =====================================================================
--- OKUL BÜFESİ — 0010 RLS, tablo yetkileri ve RPC grant'leri
+-- CANTINOS — 0010 RLS, tablo yetkileri ve RPC grant'leri
 -- İlke: tablolara doğrudan erişim YOK; yalnız doğrulanmış RPC'ler.
 -- =====================================================================
 

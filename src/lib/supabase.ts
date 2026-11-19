@@ -8,7 +8,7 @@ export const isSupabaseConfigured = url.length > 0 && anonKey.length > 0
 
 export function getIsDemoActive(): boolean {
   if (typeof window !== 'undefined') {
-    const forced = window.localStorage.getItem('okulbufesi.force_demo')
+    const forced = window.localStorage.getItem('cantinos.force_demo')
     if (forced === 'true') return true
     if (forced === 'false' && isSupabaseConfigured) return false
   }
@@ -19,7 +19,7 @@ export const isDemoActive = getIsDemoActive()
 
 export function setForceDemo(enabled: boolean): void {
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem('okulbufesi.force_demo', enabled ? 'true' : 'false')
+    window.localStorage.setItem('cantinos.force_demo', enabled ? 'true' : 'false')
     window.location.reload()
   }
 }

@@ -166,7 +166,7 @@ export function TrackPage() {
           <span className="fs-4" aria-hidden="true">
             🍽️
           </span>
-          <span className="fw-semibold">Okul Büfesi</span>
+          <span className="fw-semibold">CantinOS</span>
         </Link>
         <span className="live-indicator">
           <span className="live-dot" aria-hidden="true" />

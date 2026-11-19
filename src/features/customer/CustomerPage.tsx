@@ -224,7 +224,7 @@ export function CustomerPage() {
         <div className="d-flex flex-wrap align-items-start justify-content-between gap-3">
           <div>
             <div className="text-uppercase small fw-semibold" style={{ letterSpacing: '0.12em', opacity: 0.85 }}>
-              Okul Büfesi
+              CantinOS
             </div>
             <h1 className="display-6 mb-2">Teneffüste hazır olsun</h1>
             <p className="lead mb-0">
