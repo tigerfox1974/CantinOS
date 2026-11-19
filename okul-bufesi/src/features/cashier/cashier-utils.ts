@@ -1,0 +1,195 @@
+import { formatMoney, parseMoneyInput } from '../../lib/format'
+import type {
+  CashierOrderInput,
+  MenuProduct,
+  OrderProblem,
+  PaymentMethod,
+  StaffOrder,
+} from '../../types/domain'
+
+export const MIN_QUANTITY = 1
+export const MAX_QUANTITY = 50
+export const MAX_LINE_NOTE = 200
+export const MAX_GENERAL_NOTE = 500
+export const MAX_CUSTOMER_NAME = 80
+
+export type ReceiptSize = '58' | '80'
+
+export interface CartLine {
+  key: string
+  productId: string
+  productName: string
+  unitPrice: number
+  quantity: number
+  lineNote: string
+}
+
+export interface OrderFormValues {
+  lines: CartLine[]
+  paymentMethod: PaymentMethod | null
+  receivedText: string
+  customerName: string
+  generalNote: string
+}
+
+/** Para değerini kuruş hassasiyetinde yuvarlar. */
+export function roundMoney(value: number): number {
+  if (!Number.isFinite(value)) return 0
+  return Math.round((value + Number.EPSILON) * 100) / 100
+}
+
+export function lineTotal(line: CartLine): number {
+  return roundMoney(line.unitPrice * line.quantity)
+}
+
+export function cartTotal(lines: CartLine[]): number {
+  return roundMoney(lines.reduce((sum, line) => sum + lineTotal(line), 0))
+}
+
+export function cartItemCount(lines: CartLine[]): number {
+  return lines.reduce((sum, line) => sum + line.quantity, 0)
+}
+
+export function clampQuantity(value: number): number {
+  if (!Number.isFinite(value)) return MIN_QUANTITY
+  return Math.min(MAX_QUANTITY, Math.max(MIN_QUANTITY, Math.trunc(value)))
+}
+
+/**
+ * Ürünü sepete ekler. Aynı ürünün notsuz satırı varsa adedini artırır;
+ * notlu satırlar ayrı kalır. Adet üst sınırı aşılmaz.
+ */
+export function addProductToCart(lines: CartLine[], product: MenuProduct, newKey: string): CartLine[] {
+  const mergeIndex = lines.findIndex(
+    (line) => line.productId === product.id && line.lineNote.trim().length === 0,
+  )
+
+  if (mergeIndex === -1) {
+    return [
+      ...lines,
+      {
+        key: newKey,
+        productId: product.id,
+        productName: product.name,
+        unitPrice: product.price,
+        quantity: MIN_QUANTITY,
+        lineNote: '',
+      },
+    ]
+  }
+
+  return lines.map((line, index) =>
+    index === mergeIndex ? { ...line, quantity: clampQuantity(line.quantity + 1) } : line,
+  )
+}
+
+export function updateCartQuantity(lines: CartLine[], key: string, quantity: number): CartLine[] {
+  return lines.map((line) =>
+    line.key === key ? { ...line, quantity: clampQuantity(quantity) } : line,
+  )
+}
+
+export function updateCartLineNote(lines: CartLine[], key: string, note: string): CartLine[] {
+  const nextNote = note.slice(0, MAX_LINE_NOTE)
+  return lines.map((line) => (line.key === key ? { ...line, lineNote: nextNote } : line))
+}
+
+export function removeCartLine(lines: CartLine[], key: string): CartLine[] {
+  return lines.filter((line) => line.key !== key)
+}
+
+/** Alınan para toplamdan düşükse para üstü 0 döner. */
+export function calculateChange(received: number, total: number): number {
+  const difference = roundMoney(received - total)
+  return difference > 0 ? difference : 0
+}
+
+export function isCashSufficient(received: number, total: number): boolean {
+  return received + 0.005 >= total
+}
+
+export function remainingAmount(order: StaffOrder): number {
+  return Math.max(0, roundMoney(order.totalAmount - order.paidAmount))
+}
+
+export function openProblems(order: StaffOrder): OrderProblem[] {
+  return order.problems.filter((problem) => problem.clearedAt === null)
+}
+
+export function canDeliver(order: StaffOrder): boolean {
+  return order.status === 'READY' && order.paymentStatus === 'PAID'
+}
+
+export function paymentMethodLabel(method: PaymentMethod): string {
+  return method === 'CASH' ? 'Nakit' : 'Kart'
+}
+
+/**
+ * Formu göndermeden önce doğrular. Hata yoksa null döner.
+ */
+export function validateOrderForm(values: OrderFormValues): string | null {
+  const { lines } = values
+
+  if (lines.length === 0) {
+    return 'Sepetinizde en az bir ürün olmalı.'
+  }
+
+  if (lines.some((line) => line.quantity < MIN_QUANTITY || line.quantity > MAX_QUANTITY)) {
+    return 'Ürün adedi 1 ile 50 arasında olmalı.'
+  }
+
+  if (lines.some((line) => line.lineNote.length > MAX_LINE_NOTE)) {
+    return `Satır notu en fazla ${MAX_LINE_NOTE} karakter olabilir.`
+  }
+
+  if (values.customerName.trim().length > MAX_CUSTOMER_NAME) {
+    return `Müşteri adı en fazla ${MAX_CUSTOMER_NAME} karakter olabilir.`
+  }
+
+  if (values.generalNote.length > MAX_GENERAL_NOTE) {
+    return `Sipariş notu en fazla ${MAX_GENERAL_NOTE} karakter olabilir.`
+  }
+
+  if (!values.paymentMethod) {
+    return 'Ödeme yöntemi seçin.'
+  }
+
+  if (values.paymentMethod === 'CASH') {
+    const total = cartTotal(lines)
+    const received = parseMoneyInput(values.receivedText)
+    if (!isCashSufficient(received, total)) {
+      return `Alınan para toplamdan düşük olamaz. En az ${formatMoney(total)} girin.`
+    }
+  }
+
+  return null
+}
+
+export function buildCashierOrderInput(
+  lines: CartLine[],
+  paymentMethod: PaymentMethod,
+  receivedText: string,
+  customerName: string,
+  generalNote: string,
+): CashierOrderInput {
+  const input: CashierOrderInput = {
+    paymentMethod,
+    items: lines.map((line) => ({
+      productId: line.productId,
+      quantity: clampQuantity(line.quantity),
+      ...(line.lineNote.trim().length > 0 ? { lineNote: line.lineNote.trim() } : {}),
+    })),
+  }
+
+  if (paymentMethod === 'CASH') {
+    input.receivedAmount = roundMoney(parseMoneyInput(receivedText))
+  }
+
+  const name = customerName.trim()
+  if (name.length > 0) input.customerName = name
+
+  const note = generalNote.trim()
+  if (note.length > 0) input.generalNote = note
+
+  return input
+}

@@ -1,0 +1,4 @@
+project_id = "okul-bufesi"
+
+[functions.upload-product-image]
+verify_jwt = false
