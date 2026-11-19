@@ -67,4 +67,34 @@ describe('yerel mock rpc motoru', () => {
     const list = await staffOrderApi.list(loginRes.token)
     expect(list.some((o) => o.orderNumber === cashierOrder.orderNumber)).toBe(true)
   })
+
+  it('sekme ve canlı senkronizasyon sipariş durumunu otomatik anında yansıtır', async () => {
+    const kitchenLogin = await staffAuthApi.login('mutfak@cantinos.demo', 'Mutfak123!')
+    const menu = await publicApi.getMenu()
+    const prod = menu.categories[0].products[0]
+
+    // 1. Müşteri online sipariş verir
+    const created = await publicApi.createOnlineOrder({
+      customerName: 'Ayşe Canlı',
+      customerPhone: '0555 999 8877',
+      delivery: { type: 'NOW' },
+      items: [{ productId: prod.id, quantity: 1 }],
+    })
+
+    // 2. Mutfak tarafında sipariş anında görünür
+    const kitchenOrders = await staffOrderApi.list(kitchenLogin.token)
+    const foundInKitchen = kitchenOrders.find((o) => o.orderNumber === created.orderNumber)
+    expect(foundInKitchen).toBeDefined()
+    expect(foundInKitchen?.status).toBe('NEW')
+
+    // 3. Mutfak siparişi "PREPARING" durumuna alır
+    await staffOrderApi.setStatus(kitchenLogin.token, foundInKitchen!.id, 'PREPARING')
+
+    // 4. Müşteri takip ekranı ve TV bekleme ekranı durumu anında güncel görür
+    const track = await publicApi.trackOrder(created.orderNumber, created.trackingToken)
+    expect(track?.order?.status).toBe('PREPARING')
+
+    const displayOrders = await publicApi.displayOrders()
+    expect(displayOrders.some((d) => d.orderNumber === created.orderNumber && d.status === 'PREPARING')).toBe(true)
+  })
 })

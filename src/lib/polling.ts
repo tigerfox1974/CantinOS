@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { invalidateStore } from './mock-rpc'
 
 export const LIVE_INTERVAL_MS = 2500
 
@@ -39,9 +40,9 @@ export function usePolling<T>(
     }
   }, [])
 
-  const run = useCallback(async () => {
+  const run = useCallback(async (force = false) => {
     if (!enabled || inFlightRef.current) return
-    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
+    if (!force && typeof document !== 'undefined' && document.visibilityState === 'hidden') return
     inFlightRef.current = true
     try {
       const result = await loaderRef.current()
@@ -65,23 +66,64 @@ export function usePolling<T>(
 
   useEffect(() => {
     if (!enabled) return
-    void run()
+    void run(true)
     const timer = window.setInterval(() => {
+      invalidateStore()
       void run()
     }, intervalMs)
 
     const onVisibility = () => {
-      if (document.visibilityState === 'visible') void run()
+      if (document.visibilityState === 'visible') {
+        invalidateStore()
+        void run(true)
+      }
     }
     document.addEventListener('visibilitychange', onVisibility)
+
+    // Çoklu sekme ve anlık canlı güncelleme senkronizasyonu
+    let channel: BroadcastChannel | null = null
+    const handleSync = () => {
+      invalidateStore()
+      void run(true)
+    }
+
+    if (typeof window !== 'undefined') {
+      if ('BroadcastChannel' in window) {
+        try {
+          channel = new BroadcastChannel('cantinos_live_sync')
+          channel.addEventListener('message', handleSync)
+        } catch {
+          channel = null
+        }
+      }
+      window.addEventListener('storage', handleSync)
+      window.addEventListener('cantinos_local_sync', handleSync)
+    }
 
     return () => {
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisibility)
+      if (channel) {
+        channel.removeEventListener('message', handleSync)
+        channel.close()
+      }
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', handleSync)
+        window.removeEventListener('cantinos_local_sync', handleSync)
+      }
     }
   }, [enabled, intervalMs, run])
 
-  return { data, error, loading, refresh: run, lastUpdatedAt }
+  return {
+    data,
+    error,
+    loading,
+    refresh: () => {
+      invalidateStore()
+      return run(true)
+    },
+    lastUpdatedAt,
+  }
 }
 
 /** Canlı ekranlarda "x sn önce" göstergesi için hafif saat. */

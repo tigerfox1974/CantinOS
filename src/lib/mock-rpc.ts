@@ -76,6 +76,33 @@ function loadInitialStore(): MockStore {
 }
 
 let memoryStore: MockStore | null = null
+let broadcastChannel: BroadcastChannel | null = null
+
+export function invalidateStore(): void {
+  memoryStore = null
+}
+
+export function notifyLiveSync(): void {
+  try {
+    if (typeof window !== 'undefined') {
+      if ('BroadcastChannel' in window) {
+        if (!broadcastChannel) {
+          try {
+            broadcastChannel = new BroadcastChannel('cantinos_live_sync')
+          } catch {
+            broadcastChannel = null
+          }
+        }
+        if (broadcastChannel) {
+          broadcastChannel.postMessage({ type: 'SYNC', ts: Date.now() })
+        }
+      }
+      window.dispatchEvent(new CustomEvent('cantinos_local_sync'))
+    }
+  } catch {
+    // ignore
+  }
+}
 
 function getStore(): MockStore {
   if (memoryStore) return memoryStore
@@ -102,6 +129,7 @@ function persistStore(): void {
   if (!memoryStore || typeof window === 'undefined') return
   try {
     window.localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(memoryStore))
+    notifyLiveSync()
   } catch {
     // quota
   }
@@ -110,6 +138,7 @@ function persistStore(): void {
 export function resetDemoStore(): void {
   memoryStore = loadInitialStore()
   persistStore()
+  notifyLiveSync()
 }
 
 function resolveStaff(token: string): MockStaffAccount {
