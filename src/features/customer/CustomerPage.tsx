@@ -231,10 +231,18 @@ export function CustomerPage() {
               Menüden seçin, teslim saatini belirleyin. Ödeme teslim alınırken nakit veya kart ile yapılır.
             </p>
           </div>
-          <span className="live-indicator text-white">
-            <span className="live-dot" aria-hidden="true" />
-            {menuState.lastUpdatedAt ? `Canlı menü · ${formatTime(menuState.lastUpdatedAt)}` : 'Canlı menü'}
-          </span>
+          <div className="d-flex flex-wrap align-items-center gap-2">
+            <span className="live-indicator text-white">
+              <span className="live-dot" aria-hidden="true" />
+              {menuState.lastUpdatedAt ? `Canlı menü · ${formatTime(menuState.lastUpdatedAt)}` : 'Canlı menü'}
+            </span>
+            <Link to="/bekleme" className="btn btn-sm btn-outline-light ms-2">
+              📺 Bekleme Ekranı
+            </Link>
+            <Link to="/personel" className="btn btn-sm btn-light">
+              👤 Personel Girişi
+            </Link>
+          </div>
         </div>
       </header>
 

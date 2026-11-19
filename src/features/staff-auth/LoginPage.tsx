@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toUserMessage } from '../../lib/errors'
+import { isDemoActive } from '../../lib/supabase'
 import { roleHome, roleLabel, useAuth } from './AuthProvider'
 
 export function LoginPage() {
@@ -47,6 +48,47 @@ export function LoginPage() {
           {error ? (
             <div className="alert alert-danger py-2" role="alert">
               {error}
+            </div>
+          ) : null}
+
+          {isDemoActive ? (
+            <div className="bg-body-tertiary p-3 rounded mb-4">
+              <div className="small fw-semibold text-secondary mb-2">⚡ Hızlı Demo Girişi:</div>
+              <div className="d-flex flex-column gap-2">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-primary text-start d-flex justify-content-between align-items-center"
+                  onClick={() => {
+                    setEmail('kasa@okulbufesi.demo')
+                    setPassword('Kasa123!')
+                  }}
+                >
+                  <span>🛒 <strong>Kasa (Kantin)</strong></span>
+                  <span className="small text-body-secondary">kasa@okulbufesi.demo</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-warning text-start d-flex justify-content-between align-items-center"
+                  onClick={() => {
+                    setEmail('mutfak@okulbufesi.demo')
+                    setPassword('Mutfak123!')
+                  }}
+                >
+                  <span>🍳 <strong>Mutfak</strong></span>
+                  <span className="small text-body-secondary">mutfak@okulbufesi.demo</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-success text-start d-flex justify-content-between align-items-center"
+                  onClick={() => {
+                    setEmail('yonetici@okulbufesi.demo')
+                    setPassword('Yonetici123!')
+                  }}
+                >
+                  <span>📊 <strong>Yönetici</strong></span>
+                  <span className="small text-body-secondary">yonetici@okulbufesi.demo</span>
+                </button>
+              </div>
             </div>
           ) : null}
 

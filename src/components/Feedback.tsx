@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { setForceDemo } from '../lib/supabase'
 
 export function PageHeader({
   title,
@@ -57,15 +58,19 @@ export function EmptyState({ title, description }: { title: string; description?
 export function ConfigMissing() {
   return (
     <div className="container py-5" style={{ maxWidth: 720 }}>
-      <div className="alert alert-warning">
+      <div className="alert alert-warning shadow-sm p-4">
         <h2 className="h5">Sistem yapılandırması eksik</h2>
         <p className="mb-2">
-          Uygulama Supabase bağlantısı olmadan çalışamaz. Proje kökünde <code>.env</code> dosyası oluşturup
-          aşağıdaki değerleri doldurun:
+          Uygulama canlı Supabase bağlantısı olmadan çalışmak üzere yapılandırılmamış. Proje kökünde <code>.env</code> dosyası oluşturup aşağıdaki değerleri doldurabilir veya doğrudan yerel demo modunu başlatabilirsiniz:
         </p>
-        <pre className="mb-0 small bg-body-tertiary p-3 rounded">
+        <pre className="mb-3 small bg-body-tertiary p-3 rounded">
           VITE_SUPABASE_URL=...{'\n'}VITE_SUPABASE_ANON_KEY=...
         </pre>
+        <div className="d-flex gap-2">
+          <button type="button" className="btn btn-primary" onClick={() => setForceDemo(true)}>
+            🧪 Demo Modunda Çalıştır
+          </button>
+        </div>
       </div>
     </div>
   )

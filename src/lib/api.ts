@@ -22,9 +22,13 @@ import type {
   TrackResult,
 } from '../types/domain'
 import { AppError, logTechnicalError, toUserMessage } from './errors'
-import { requireSupabase, supabase } from './supabase'
+import { mockRpc } from './mock-rpc'
+import { isDemoActive, requireSupabase, supabase } from './supabase'
 
 async function rpc<T>(name: string, params: Record<string, unknown> = {}): Promise<T> {
+  if (isDemoActive) {
+    return mockRpc<T>(name, params)
+  }
   const client = requireSupabase()
   const { data, error } = await client.rpc(name, params)
   if (error) {
@@ -220,6 +224,21 @@ export const staffAdminApi = {
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024
 
 export async function uploadProductImage(token: string, file: File): Promise<string> {
+  if (isDemoActive) {
+    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+      throw new AppError('Yalnız PNG ve JPEG görseller yüklenebilir.')
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      throw new AppError('Görsel en fazla 3 MB olabilir.')
+    }
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = () => reject(new AppError('Görsel okunamadı.'))
+      reader.readAsDataURL(file)
+    })
+  }
+
   if (!supabase) throw new AppError('Sistem yapılandırması eksik. Yöneticinize başvurun.')
   if (!['image/png', 'image/jpeg'].includes(file.type)) {
     throw new AppError('Yalnız PNG ve JPEG görseller yüklenebilir.')

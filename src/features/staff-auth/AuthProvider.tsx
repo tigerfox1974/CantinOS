@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { staffAuthApi } from '../../lib/api'
 import { logTechnicalError } from '../../lib/errors'
-import { isSupabaseConfigured } from '../../lib/supabase'
+import { isDemoActive, isSupabaseConfigured } from '../../lib/supabase'
 import type { LoginResult, StaffRole } from '../../types/domain'
 
 const STORAGE_KEY = 'okulbufesi.staff.session'
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(() => Boolean(readStored()))
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
+    if (!isSupabaseConfigured && !isDemoActive) {
       setLoading(false)
       return
     }

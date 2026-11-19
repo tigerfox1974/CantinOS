@@ -1,7 +1,8 @@
 import { Link, Route, Routes } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
+import { DemoBadge } from '../components/DemoBadge'
 import { ConfigMissing } from '../components/Feedback'
-import { isSupabaseConfigured } from '../lib/supabase'
+import { isDemoActive, isSupabaseConfigured } from '../lib/supabase'
 import { CustomerPage } from '../features/customer/CustomerPage'
 import { TrackPage } from '../features/customer/TrackPage'
 import { WaitingDisplayPage } from '../features/waiting-display/WaitingDisplayPage'
@@ -24,10 +25,12 @@ function NotFound() {
 }
 
 export function App() {
-  if (!isSupabaseConfigured) return <ConfigMissing />
+  if (!isSupabaseConfigured && !isDemoActive) return <ConfigMissing />
 
   return (
-    <Routes>
+    <>
+      {isDemoActive ? <DemoBadge /> : null}
+      <Routes>
       <Route path="/" element={<CustomerPage />} />
       <Route path="/takip/:siparisNo/:trackingToken" element={<TrackPage />} />
       <Route path="/bekleme" element={<WaitingDisplayPage />} />
@@ -66,5 +69,6 @@ export function App() {
 
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </>
   )
 }
