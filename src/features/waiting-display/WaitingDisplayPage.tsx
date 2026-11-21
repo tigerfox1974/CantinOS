@@ -17,7 +17,7 @@ function ReadyOrderCard({ orderNumber, index }: { orderNumber: number; index: nu
 
   useEffect(() => {
     // Her kart için ayrık başlangıç fazı (böylece 15 saniyelik zamanlayıcıları farklı anlarda başlar)
-    const initialDelay = 1500 + ((index * 3600) % 15000)
+    const initialDelay = 1500 + ((index * 3600) % 10000)
     let intervalId: number
     let shakeTimerId: number
 
@@ -32,7 +32,7 @@ function ReadyOrderCard({ orderNumber, index }: { orderNumber: number; index: nu
     const startTimer = window.setTimeout(() => {
       trigger()
       // Sabit 15 saniyede bir (15000ms) periyodik olarak tekrarlanır
-      intervalId = window.setInterval(trigger, 15000)
+      intervalId = window.setInterval(trigger, 10000)
     }, initialDelay)
 
     return () => {
