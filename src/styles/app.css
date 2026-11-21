@@ -438,7 +438,7 @@ a {
   justify-content: center;
 }
 
-/* 360 Derece Dönen Sıcak Amber / Turuncu Gradient Işık Çerçevesi */
+/* 360 Derece Dönen Orijinal Altın Sarısı Gradient Işık Çerçevesi */
 .waiting-number.is-preparing::before {
   position: absolute;
   content: '';
@@ -447,7 +447,7 @@ a {
   height: 200%;
   top: -50%;
   left: -50%;
-  background: linear-gradient(90deg, transparent 20%, #ff9966 45%, #ffbb66 50%, #ff9966 55%, transparent 80%);
+  background: linear-gradient(90deg, transparent 20%, #f0ad4e 40%, #ffd28a 50%, #f0ad4e 60%, transparent 80%);
   animation: rotation_481 4500ms infinite linear;
   z-index: 1;
 }
