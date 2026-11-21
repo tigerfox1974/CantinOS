@@ -26,7 +26,7 @@ function ReadyOrderCard({ orderNumber, index }: { orderNumber: number; index: nu
       setSpinKey((prev) => prev + 1)
       shakeTimerId = window.setTimeout(() => {
         setShaking(false)
-      }, 320)
+      }, 2000)
     }
 
     const startTimer = window.setTimeout(() => {

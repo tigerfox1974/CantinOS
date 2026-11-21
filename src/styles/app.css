@@ -515,7 +515,7 @@ a {
 }
 
 .waiting-number.is-ready.is-shaking {
-  animation: shake3856 0.3s linear both;
+  animation: shake3856 0.22s linear infinite both;
   box-shadow: 0 0 28px rgba(92, 184, 92, 0.75);
   border-color: #5cb85c;
 }
