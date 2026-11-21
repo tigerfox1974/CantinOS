@@ -114,35 +114,195 @@ a {
   padding: 14px 18px;
 }
 
-.category-strip {
+/* ---------------- Menü Gezintisi & Canlı Arama (Kiosk) ---------------- */
+.menu-nav-container {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 25;
+  background: rgba(244, 247, 251, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px 0 10px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(226, 233, 241, 0.85);
+}
+
+.menu-search-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+  max-width: 480px;
+}
+
+.menu-search-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid var(--ob-line);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(31, 45, 61, 0.04);
+  padding: 2px 14px;
+  transition: all 0.2s ease;
+}
+
+.menu-search-input-group:focus-within {
+  border-color: #2fa4d9;
+  box-shadow: 0 0 0 3px rgba(47, 164, 217, 0.18), 0 4px 12px rgba(31, 45, 61, 0.08);
+}
+
+.menu-search-icon {
+  font-size: 1rem;
+  color: #8c9ba5;
+  margin-right: 8px;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.menu-search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: var(--ob-ink);
+}
+
+.menu-search-input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.menu-search-input::-webkit-search-decoration,
+.menu-search-input::-webkit-search-cancel-button,
+.menu-search-input::-webkit-search-results-button,
+.menu-search-input::-webkit-search-results-decoration {
+  display: none;
+}
+
+.menu-search-clear {
+  border: none;
+  background: #eef2f6;
+  color: #64748b;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.menu-search-clear:hover {
+  background: #cbd5e1;
+  color: #1e293b;
+}
+
+.category-strip-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.category-strip-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(to right, transparent, rgba(244, 247, 251, 0.95));
+  pointer-events: none;
+}
+
+.category-strip {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 10px 0;
-  background: rgba(244, 247, 251, 0.94);
-  backdrop-filter: blur(8px);
-  scrollbar-width: thin;
+  padding: 2px 4px 6px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-strip::-webkit-scrollbar {
+  display: none;
 }
 
 .category-pill {
   flex: 0 0 auto;
-  border: 1px solid var(--ob-line);
-  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid var(--ob-line);
+  background: #ffffff;
   color: var(--ob-ink);
   border-radius: 999px;
-  padding: 7px 16px;
+  padding: 8px 18px;
   font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.15s ease;
+  font-size: 0.92rem;
+  box-shadow: 0 2px 6px rgba(31, 45, 61, 0.04);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+}
+
+.category-pill:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(31, 45, 61, 0.08);
 }
 
 .category-pill.active {
-  background: var(--bs-primary);
-  border-color: var(--bs-primary);
-  color: #fff;
+  background: linear-gradient(135deg, #1f7fa8 0%, #2fa4d9 100%);
+  border-color: #1f7fa8;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(31, 127, 168, 0.35);
+  transform: translateY(-1px);
+}
+
+.category-pill-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.category-pill-name {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.category-pill-count {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #edf2f7;
+  color: #4a5d6e;
+  transition: all 0.18s ease;
+}
+
+.category-pill.active .category-pill-count {
+  background: rgba(255, 255, 255, 0.26);
+  color: #ffffff;
+}
+
+.empty-search-state {
+  background: #ffffff;
+  border: 1px dashed var(--ob-line);
+  border-radius: var(--ob-radius);
+  padding: 40px 20px;
 }
 
 .customer-layout {
@@ -1029,6 +1189,30 @@ a {
 @media (max-width: 576px) {
   .customer-hero {
     padding: 28px 18px 24px;
+  }
+
+  .menu-nav-container {
+    padding: 8px 0 8px;
+    margin-bottom: 16px;
+  }
+
+  .menu-search-wrapper {
+    margin-bottom: 8px;
+  }
+
+  .category-pill {
+    padding: 6px 13px;
+    font-size: 0.86rem;
+    gap: 6px;
+  }
+
+  .category-pill-icon {
+    font-size: 1rem;
+  }
+
+  .category-pill-count {
+    font-size: 0.7rem;
+    padding: 1px 6px;
   }
 
   .product-grid {

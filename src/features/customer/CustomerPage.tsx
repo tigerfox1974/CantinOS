@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { EmptyState, ErrorAlert, LoadingBlock } from '../../components/Feedback'
 import { publicApi } from '../../lib/api'
@@ -29,11 +29,27 @@ function clampLineQuantity(value: number): number {
   return Math.min(MAX_LINE_QUANTITY, Math.max(1, Math.trunc(value)))
 }
 
+function getCategoryIcon(name: string): string {
+  const lower = name.toLocaleLowerCase('tr-TR')
+  if (lower.includes('tost') || lower.includes('sandviç') || lower.includes('ekmek') || lower.includes('burger')) return '🥪'
+  if (lower.includes('içecek') || lower.includes('kahve') || lower.includes('çay') || lower.includes('su') || lower.includes('kola') || lower.includes('soda') || lower.includes('ayran')) return '🥤'
+  if (lower.includes('atıştırmalık') || lower.includes('cips') || lower.includes('kraker') || lower.includes('bisküvi') || lower.includes('kuruyemiş')) return '🍟'
+  if (lower.includes('tatlı') || lower.includes('çikolata') || lower.includes('kek') || lower.includes('pasta') || lower.includes('waffle')) return '🍰'
+  if (lower.includes('dondurma')) return '🍦'
+  if (lower.includes('poğaça') || lower.includes('börek') || lower.includes('simit') || lower.includes('açma') || lower.includes('unlu')) return '🥐'
+  if (lower.includes('sıcak') || lower.includes('yemek') || lower.includes('çorba')) return '🍲'
+  if (lower.includes('salata') || lower.includes('meyve')) return '🥗'
+  if (lower.includes('döner') || lower.includes('dürüm')) return '🌯'
+  if (lower.includes('pizza')) return '🍕'
+  return '🍴'
+}
+
 export function CustomerPage() {
   const menuState = usePolling(() => publicApi.getMenu())
   const menu = menuState.data
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('ALL')
+  const [searchQuery, setSearchQuery] = useState('')
   const [cart, setCart] = useState<CartLine[]>([])
   const [successResult, setSuccessResult] = useState<OnlineOrderResult | null>(null)
   const [successSnapshot, setSuccessSnapshot] = useState<OrderSnapshot | null>(null)
@@ -141,8 +157,41 @@ export function CustomerPage() {
   }
 
   const categories = menu?.categories ?? []
-  const activeCategory = categories.find((category) => category.id === selectedCategoryId) ?? categories[0] ?? null
-  const products = activeCategory?.products ?? []
+
+  const allProducts = useMemo(() => {
+    return categories.flatMap((cat) => cat.products)
+  }, [categories])
+
+  const totalProductCount = allProducts.length
+  const isSearching = searchQuery.trim().length > 0
+  const normalizedSearch = searchQuery.trim().toLocaleLowerCase('tr-TR')
+
+  const displayedProducts = useMemo(() => {
+    if (isSearching) {
+      return allProducts.filter((product) => {
+        const matchName = product.name.toLocaleLowerCase('tr-TR').includes(normalizedSearch)
+        const matchDesc = product.description
+          ? product.description.toLocaleLowerCase('tr-TR').includes(normalizedSearch)
+          : false
+        return matchName || matchDesc
+      })
+    }
+
+    if (selectedCategoryId === 'ALL' || !selectedCategoryId) {
+      return allProducts
+    }
+
+    const category = categories.find((cat) => cat.id === selectedCategoryId)
+    return category ? category.products : allProducts
+  }, [allProducts, categories, isSearching, normalizedSearch, selectedCategoryId])
+
+  let headingTitle = 'Tüm Menü'
+  if (isSearching) {
+    headingTitle = `Arama: "${searchQuery.trim()}"`
+  } else if (selectedCategoryId && selectedCategoryId !== 'ALL') {
+    const category = categories.find((cat) => cat.id === selectedCategoryId)
+    if (category) headingTitle = category.name
+  }
 
   let menuContent: ReactNode
   if (!menu) {
@@ -158,37 +207,108 @@ export function CustomerPage() {
   } else {
     menuContent = (
       <>
-        <div className="category-strip" aria-label="Menü kategorileri">
-          {categories.map((category) => {
-            const active = category.id === activeCategory?.id
-            return (
+        <div className="menu-nav-container" aria-label="Menü Gezintisi">
+          {/* Canlı Arama Çubuğu */}
+          <div className="menu-search-wrapper">
+            <div className="menu-search-input-group">
+              <span className="menu-search-icon" aria-hidden="true">🔍</span>
+              <input
+                type="search"
+                className="menu-search-input"
+                placeholder="Menüde ara... (ör. Tost, ayran, çikolata)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Menüde ürün ara"
+              />
+              {searchQuery ? (
+                <button
+                  type="button"
+                  className="menu-search-clear"
+                  onClick={() => setSearchQuery('')}
+                  aria-label="Aramayı temizle"
+                  title="Aramayı temizle"
+                >
+                  ✕
+                </button>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Kiosk Kategori Şeridi */}
+          <div className="category-strip-wrapper">
+            <div className="category-strip" role="tablist" aria-label="Menü kategorileri">
               <button
-                key={category.id}
                 type="button"
-                className={`category-pill${active ? ' active' : ''}`}
-                aria-pressed={active}
-                onClick={() => setSelectedCategoryId(category.id)}
+                role="tab"
+                className={`category-pill${!isSearching && selectedCategoryId === 'ALL' ? ' active' : ''}`}
+                aria-selected={!isSearching && selectedCategoryId === 'ALL'}
+                onClick={() => {
+                  setSelectedCategoryId('ALL')
+                  if (isSearching) setSearchQuery('')
+                }}
               >
-                {category.name}
+                <span className="category-pill-icon" aria-hidden="true">✨</span>
+                <span className="category-pill-name">Tümü</span>
+                <span className="category-pill-count">{totalProductCount}</span>
               </button>
-            )
-          })}
+
+              {categories.map((category) => {
+                const active = !isSearching && selectedCategoryId === category.id
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    role="tab"
+                    className={`category-pill${active ? ' active' : ''}`}
+                    aria-selected={active}
+                    onClick={() => {
+                      setSelectedCategoryId(category.id)
+                      if (isSearching) setSearchQuery('')
+                    }}
+                  >
+                    <span className="category-pill-icon" aria-hidden="true">
+                      {getCategoryIcon(category.name)}
+                    </span>
+                    <span className="category-pill-name">{category.name}</span>
+                    <span className="category-pill-count">{category.products.length}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="customer-layout">
           <section aria-labelledby="menu-heading">
             <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-3">
               <h2 id="menu-heading" className="h4 mb-0">
-                {activeCategory?.name ?? 'Menü'}
+                {headingTitle}
               </h2>
-              <span className="text-body-secondary small">{products.length} ürün</span>
+              <span className="text-body-secondary small">{displayedProducts.length} ürün</span>
             </div>
 
-            {products.length === 0 ? (
-              <EmptyState title="Bu kategoride ürün yok" description="Başka bir kategori seçebilirsiniz." />
+            {displayedProducts.length === 0 ? (
+              isSearching ? (
+                <div className="empty-search-state text-center py-5">
+                  <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🔍</div>
+                  <h3 className="h5 mb-2">Aradığınız ürün bulunamadı</h3>
+                  <p className="text-muted mb-3" style={{ maxWidth: '420px', margin: '0 auto 16px' }}>
+                    &ldquo;{searchQuery}&rdquo; aramasına uygun bir ürün bulamadık. Farklı bir kelime deneyebilir veya kategorilerden seçim yapabilirsiniz.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary rounded-pill px-4"
+                    onClick={() => setSearchQuery('')}
+                  >
+                    Aramayı Temizle
+                  </button>
+                </div>
+              ) : (
+                <EmptyState title="Bu kategoride ürün yok" description="Başka bir kategori seçebilirsiniz." />
+              )
             ) : (
               <div className="product-grid">
-                {products.map((product) => (
+                {displayedProducts.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
