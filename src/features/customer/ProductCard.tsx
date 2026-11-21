@@ -66,7 +66,7 @@ export function ProductCard({ product, orderingEnabled, onAdd }: ProductCardProp
           {!orderingEnabled ? <span className="badge text-bg-secondary">Online kapalı</span> : null}
         </div>
 
-        <div className="d-flex align-items-center gap-2 mt-2">
+        <div className="product-actions mt-2">
           <div className="qty-control" role="group" aria-label={`${product.name} adedi`}>
             <button type="button" onClick={decrease} disabled={!canAdd || quantity <= 1} aria-label="Adet azalt">
               −
@@ -95,7 +95,7 @@ export function ProductCard({ product, orderingEnabled, onAdd }: ProductCardProp
 
           <button
             type="button"
-            className="btn btn-primary btn-sm flex-grow-1"
+            className="btn btn-primary btn-sm btn-add-product"
             disabled={!canAdd}
             onClick={() => {
               onAdd(product, quantity)

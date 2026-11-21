@@ -9,9 +9,12 @@ import { CartPanel } from './CartPanel'
 import { CheckoutForm } from './CheckoutForm'
 import { OrderSuccessModal } from './OrderSuccessModal'
 import { ProductCard } from './ProductCard'
+import { formatMoney } from '../../lib/format'
 import {
   MAX_LINE_NOTE,
   MAX_LINE_QUANTITY,
+  cartCount,
+  cartTotal,
   type CartLine,
   type OrderSnapshot,
 } from './cart'
@@ -51,6 +54,7 @@ export function CustomerPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('ALL')
   const [searchQuery, setSearchQuery] = useState('')
   const [cart, setCart] = useState<CartLine[]>([])
+  const [mobileCartOpen, setMobileCartOpen] = useState(false)
   const [successResult, setSuccessResult] = useState<OnlineOrderResult | null>(null)
   const [successSnapshot, setSuccessSnapshot] = useState<OrderSnapshot | null>(null)
   const [successOpen, setSuccessOpen] = useState(false)
@@ -149,12 +153,16 @@ export function CustomerPage() {
   }
 
   function handleSuccess(result: OnlineOrderResult, snapshot: OrderSnapshot) {
+    setMobileCartOpen(false)
     setSuccessResult(result)
     setSuccessSnapshot(snapshot)
     setSuccessOpen(true)
     setCart([])
     setFormVersion((version) => version + 1)
   }
+
+  const mobileCount = cartCount(cart)
+  const mobileTotal = cartTotal(cart)
 
   const categories = menu?.categories ?? []
 
@@ -339,7 +347,7 @@ export function CustomerPage() {
   }
 
   return (
-    <div className="customer-page">
+    <div className={`customer-page${mobileCount > 0 ? ' has-mobile-cart' : ''}`}>
       <header className="customer-hero">
         <div className="d-flex flex-wrap align-items-start justify-content-between gap-3">
           <div>
@@ -428,6 +436,72 @@ export function CustomerPage() {
       ) : null}
 
       {menuContent}
+
+      {/* Mobil Yüzen Sepet Çubuğu */}
+      {mobileCount > 0 && !mobileCartOpen ? (
+        <aside className="mobile-cart-bar" aria-label="Mobil Sepet">
+          <div className="mobile-cart-bar-info">
+            <span className="mobile-cart-bar-badge">{mobileCount} ürün</span>
+            <span className="mobile-cart-bar-total text-tabular">{formatMoney(mobileTotal)}</span>
+          </div>
+          <button
+            type="button"
+            className="btn btn-primary rounded-pill mobile-cart-bar-btn"
+            onClick={() => setMobileCartOpen(true)}
+          >
+            Sepeti Onayla ➔
+          </button>
+        </aside>
+      ) : null}
+
+      {/* Mobil Checkout Çekmecesi (Bottom Sheet) */}
+      {mobileCartOpen ? (
+        <div
+          className="mobile-cart-drawer-backdrop"
+          onClick={() => setMobileCartOpen(false)}
+          aria-modal="true"
+          role="dialog"
+        >
+          <div
+            className="mobile-cart-drawer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mobile-cart-drawer-header">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1"
+                onClick={() => setMobileCartOpen(false)}
+              >
+                <span>←</span> Menüye Dön
+              </button>
+              <h3 className="h6 mb-0 fw-bold">Sepetim ({mobileCount})</h3>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setMobileCartOpen(false)}
+                aria-label="Kapat"
+              />
+            </div>
+
+            <div className="mobile-cart-drawer-body">
+              <CartPanel
+                lines={cart}
+                onQuantityChange={handleQuantityChange}
+                onNoteChange={handleNoteChange}
+                onRemove={handleRemove}
+                isMobileDrawer
+              >
+                <CheckoutForm
+                  key={formVersion}
+                  lines={cart}
+                  orderingEnabled={menu?.onlineOrderingEnabled ?? false}
+                  onSuccess={handleSuccess}
+                />
+              </CartPanel>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {successResult && successSnapshot ? (
         <OrderSuccessModal

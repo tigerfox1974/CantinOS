@@ -14,9 +14,17 @@ interface CartPanelProps {
   onNoteChange: (productId: string, note: string) => void
   onRemove: (productId: string) => void
   children?: ReactNode
+  isMobileDrawer?: boolean
 }
 
-export function CartPanel({ lines, onQuantityChange, onNoteChange, onRemove, children }: CartPanelProps) {
+export function CartPanel({
+  lines,
+  onQuantityChange,
+  onNoteChange,
+  onRemove,
+  children,
+  isMobileDrawer = false,
+}: CartPanelProps) {
   const total = cartTotal(lines)
   const count = cartCount(lines)
 
@@ -25,6 +33,8 @@ export function CartPanel({ lines, onQuantityChange, onNoteChange, onRemove, chi
   const [dockStyle, setDockStyle] = useState<CSSProperties>({})
 
   useEffect(() => {
+    if (isMobileDrawer) return
+
     function updateDock() {
       if (window.innerWidth <= 992) {
         setIsDocked(false)
@@ -63,19 +73,16 @@ export function CartPanel({ lines, onQuantityChange, onNoteChange, onRemove, chi
       window.removeEventListener('scroll', updateDock)
       window.removeEventListener('resize', updateDock)
     }
-  }, [])
+  }, [isMobileDrawer])
 
-  return (
-    <div ref={containerRef} className="cart-column">
-      <aside
-        className={`cart-panel${isDocked ? ' is-docked' : ''}`}
-        style={isDocked ? dockStyle : undefined}
-        aria-label="Sepet ve sipariş bilgileri"
-      >
+  const content = (
+    <>
+      {!isMobileDrawer ? (
         <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
-        <h2 className="h5 mb-0">Sepetim</h2>
-        <span className="badge text-bg-primary">{count} ürün</span>
-      </div>
+          <h2 className="h5 mb-0">Sepetim</h2>
+          <span className="badge text-bg-primary">{count} ürün</span>
+        </div>
+      ) : null}
 
       {lines.length === 0 ? (
         <p className="text-body-secondary small mb-0">
@@ -178,6 +185,25 @@ export function CartPanel({ lines, onQuantityChange, onNoteChange, onRemove, chi
       </div>
 
       {children ? <div className="mt-3">{children}</div> : null}
+    </>
+  )
+
+  if (isMobileDrawer) {
+    return (
+      <div className="cart-panel in-drawer" aria-label="Sepet ve sipariş bilgileri">
+        {content}
+      </div>
+    )
+  }
+
+  return (
+    <div ref={containerRef} className="cart-column">
+      <aside
+        className={`cart-panel${isDocked ? ' is-docked' : ''}`}
+        style={isDocked ? dockStyle : undefined}
+        aria-label="Sepet ve sipariş bilgileri"
+      >
+        {content}
       </aside>
     </div>
   )
