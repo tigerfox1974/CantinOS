@@ -97,7 +97,7 @@ export function CashierPage() {
       ) : null}
 
       {/* 2 SÜTUNLU KASA DÜZENİ: Sol Menü (%68) + Sağ Canlı Sepet/Ödeme (%32) */}
-      <div className="cashier-layout-wrapper pb-5">
+      <div className="cashier-layout-wrapper pb-3">
         <NewOrderPanel
           token={token}
           menu={menuPoll.data}

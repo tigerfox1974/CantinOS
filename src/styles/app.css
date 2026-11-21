@@ -1620,10 +1620,40 @@ a {
   overflow: hidden;
 }
 
+/* Kasa POS 2 Sütunlu Eşit Seviye Kart Mimarisi (Masaüstü) */
+@media (min-width: 992px) {
+  .pos-menu-card,
+  .cashier-cart {
+    height: calc(100vh - 175px);
+    max-height: calc(100vh - 175px);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    top: auto;
+  }
+
+  .pos-menu-card {
+    overflow: hidden;
+  }
+
+  .pos-product-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .cashier-cart {
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative !important;
+    top: auto !important;
+  }
+}
+
 .cashier-cart {
-  position: sticky;
-  top: 16px;
-  max-height: calc(100vh - 84px);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -2053,8 +2083,10 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .pos-menu-card,
   .cashier-cart {
     position: static !important;
+    height: auto !important;
     max-height: none !important;
     overflow-y: visible !important;
     width: 100% !important;

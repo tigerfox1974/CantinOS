@@ -230,7 +230,7 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
     <div className="row g-3">
       {/* SOL: POS Menü ve Canlı Ürün Arama (%68 - %70 Genişlik) */}
       <div className="col-12 col-lg-7 col-xl-8">
-        <section className="surface-card p-3 h-100 d-flex flex-column" aria-labelledby="cashier-menu-heading">
+        <section className="pos-menu-card surface-card p-3 h-100 d-flex flex-column" aria-labelledby="cashier-menu-heading">
           <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
             <h2 id="cashier-menu-heading" className="h5 mb-0 d-flex align-items-center gap-2">
               <span>Menü</span>
