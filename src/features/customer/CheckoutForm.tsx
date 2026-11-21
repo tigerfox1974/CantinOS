@@ -183,76 +183,84 @@ export function CheckoutForm({ lines, orderingEnabled, onSuccess }: CheckoutForm
           <span className="form-label d-block">Teslim Zamanı</span>
 
           <div className="d-grid gap-2">
-            <div className="form-check border rounded p-2 ps-4">
+            <label className={`delivery-slot-card${deliveryType === 'NOW' ? ' is-selected' : ''}`} htmlFor="delivery-now">
               <input
-                className="form-check-input"
+                className="delivery-slot-radio"
                 type="radio"
                 name="delivery"
                 id="delivery-now"
                 checked={deliveryType === 'NOW'}
                 onChange={() => setDeliveryType('NOW')}
               />
-              <label className="form-check-label w-100" htmlFor="delivery-now">
+              <div className="delivery-slot-content">
                 <span className="fw-semibold">Hemen</span>
                 <span className="d-block small text-body-secondary">Siparişiniz en kısa sürede hazırlanır.</span>
-              </label>
-            </div>
+              </div>
+            </label>
 
             {slots.map((slot) => {
               const available = slotIsAvailable(slot)
+              const selected = deliveryType === 'SLOT' && slotId === slot.id
               return (
-                <div className="form-check border rounded p-2 ps-4" key={slot.id}>
+                <label
+                  className={`delivery-slot-card${selected ? ' is-selected' : ''}${!available ? ' is-disabled' : ''}`}
+                  key={slot.id}
+                  htmlFor={`delivery-slot-${slot.id}`}
+                >
                   <input
-                    className="form-check-input"
+                    className="delivery-slot-radio"
                     type="radio"
                     name="delivery"
                     id={`delivery-slot-${slot.id}`}
-                    checked={deliveryType === 'SLOT' && slotId === slot.id}
+                    checked={selected}
                     disabled={!available}
                     onChange={() => {
                       setDeliveryType('SLOT')
                       setSlotId(slot.id)
                     }}
                   />
-                  <label className="form-check-label w-100" htmlFor={`delivery-slot-${slot.id}`}>
+                  <div className="delivery-slot-content">
                     <span className="fw-semibold">{slot.label}</span>
                     <span className="small text-body-secondary ms-2">{slot.targetTime}</span>
                     {!available ? <span className="badge text-bg-secondary ms-2">Geçti</span> : null}
-                  </label>
-                </div>
+                  </div>
+                </label>
               )
             })}
 
-            <div className="form-check border rounded p-2 ps-4">
+            <label
+              className={`delivery-slot-card${deliveryType === 'CUSTOM' ? ' is-selected' : ''}`}
+              htmlFor="delivery-custom"
+            >
               <input
-                className="form-check-input"
+                className="delivery-slot-radio"
                 type="radio"
                 name="delivery"
                 id="delivery-custom"
                 checked={deliveryType === 'CUSTOM'}
                 onChange={() => setDeliveryType('CUSTOM')}
               />
-              <label className="form-check-label w-100" htmlFor="delivery-custom">
+              <div className="delivery-slot-content w-100">
                 <span className="fw-semibold">Özel saat</span>
                 <span className="d-block small text-body-secondary">Bugün için ileri bir saat seçin.</span>
-              </label>
-              {deliveryType === 'CUSTOM' ? (
-                <div className="mt-2">
-                  <input
-                    type="time"
-                    className={`form-control${deliveryError ? ' is-invalid' : ''}`}
-                    value={customTime}
-                    min={localTime()}
-                    max="23:59"
-                    aria-label="Özel teslim saati"
-                    onChange={(event) => {
-                      setDeliveryType('CUSTOM')
-                      setCustomTime(event.target.value)
-                    }}
-                  />
-                </div>
-              ) : null}
-            </div>
+                {deliveryType === 'CUSTOM' ? (
+                  <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="time"
+                      className={`form-control${deliveryError ? ' is-invalid' : ''}`}
+                      value={customTime}
+                      min={localTime()}
+                      max="23:59"
+                      aria-label="Özel teslim saati"
+                      onChange={(event) => {
+                        setDeliveryType('CUSTOM')
+                        setCustomTime(event.target.value)
+                      }}
+                    />
+                  </div>
+                ) : null}
+              </div>
+            </label>
           </div>
 
           {slotsState.error ? (
