@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { DynamicCookingIcon } from '../../components/DynamicCookingIcon'
 import { SpinningCounter } from '../../components/SpinningCounter'
 import { ErrorAlert } from '../../components/Feedback'
@@ -9,6 +9,44 @@ import { useClock, usePolling } from '../../lib/polling'
 function toTime(value: string): number {
   const time = new Date(value).getTime()
   return Number.isNaN(time) ? 0 : time
+}
+
+function ReadyOrderCard({ orderNumber, index }: { orderNumber: number; index: number }) {
+  const [shaking, setShaking] = useState(false)
+  const [spinKey, setSpinKey] = useState(0)
+
+  useEffect(() => {
+    // Her kart için ayrık başlangıç fazı (böylece 15 saniyelik zamanlayıcıları farklı anlarda başlar)
+    const initialDelay = 1500 + ((index * 3600) % 15000)
+    let intervalId: number
+    let shakeTimerId: number
+
+    const trigger = () => {
+      setShaking(true)
+      setSpinKey((prev) => prev + 1)
+      shakeTimerId = window.setTimeout(() => {
+        setShaking(false)
+      }, 320)
+    }
+
+    const startTimer = window.setTimeout(() => {
+      trigger()
+      // Sabit 15 saniyede bir (15000ms) periyodik olarak tekrarlanır
+      intervalId = window.setInterval(trigger, 15000)
+    }, initialDelay)
+
+    return () => {
+      clearTimeout(startTimer)
+      clearInterval(intervalId)
+      clearTimeout(shakeTimerId)
+    }
+  }, [index, orderNumber])
+
+  return (
+    <div className={`waiting-number is-ready ${shaking ? 'is-shaking' : ''}`}>
+      <SpinningCounter value={orderNumber} triggerKey={spinKey} />
+    </div>
+  )
 }
 
 export function WaitingDisplayPage() {
@@ -124,13 +162,11 @@ export function WaitingDisplayPage() {
             ) : (
               <div className="waiting-numbers">
                 {ready.map((order, index) => (
-                  <div
+                  <ReadyOrderCard
                     key={order.orderNumber}
-                    className="waiting-number is-ready"
-                    style={{ animationDelay: `${(index * 0.85) % 2.6}s` }}
-                  >
-                    <SpinningCounter value={order.orderNumber} index={index} />
-                  </div>
+                    orderNumber={order.orderNumber}
+                    index={index}
+                  />
                 ))}
               </div>
             )}

@@ -509,35 +509,41 @@ a {
 
 .waiting-number.is-ready {
   background: rgba(92, 184, 92, 0.22);
-  border-color: rgba(92, 184, 92, 0.8);
+  border: 1.5px solid rgba(92, 184, 92, 0.8);
   color: #c8fcc8;
-  box-shadow: 0 0 20px rgba(92, 184, 92, 0.4);
-  animation: ready-heartbeat 2.6s ease-in-out infinite;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
 }
 
-@keyframes ready-heartbeat {
+.waiting-number.is-ready.is-shaking {
+  animation: shake3856 0.3s linear both;
+  box-shadow: 0 0 28px rgba(92, 184, 92, 0.75);
+  border-color: #5cb85c;
+}
+
+@keyframes shake3856 {
   0% {
-    transform: scale(1);
-    box-shadow: 0 0 16px rgba(92, 184, 92, 0.35);
+    -webkit-transform: translate(0);
+    transform: translate(0);
   }
-  12% {
-    transform: scale(1.08);
-    box-shadow: 0 0 35px rgba(92, 184, 92, 0.75);
-    border-color: #5cb85c;
+  20% {
+    -webkit-transform: translate(-2px, 2px);
+    transform: translate(-2px, 2px);
   }
-  24% {
-    transform: scale(1.02);
-    box-shadow: 0 0 22px rgba(92, 184, 92, 0.45);
+  40% {
+    -webkit-transform: translate(-2px, -2px);
+    transform: translate(-2px, -2px);
   }
-  38% {
-    transform: scale(1.12);
-    box-shadow: 0 0 45px rgba(92, 184, 92, 0.85);
-    border-color: #7de67d;
+  60% {
+    -webkit-transform: translate(2px, 2px);
+    transform: translate(2px, 2px);
   }
-  65%,
+  80% {
+    -webkit-transform: translate(2px, -2px);
+    transform: translate(2px, -2px);
+  }
   100% {
-    transform: scale(1);
-    box-shadow: 0 0 16px rgba(92, 184, 92, 0.35);
+    -webkit-transform: translate(0);
+    transform: translate(0);
   }
 }
 

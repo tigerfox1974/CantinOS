@@ -279,44 +279,32 @@ function roll(el: HTMLElement, from: number, to: number, forceSpin = false): () 
 export interface SpinningCounterProps {
   value: number;
   className?: string;
-  index?: number;
+  triggerKey?: number;
 }
 
-export function SpinningCounter({ value, className = "", index = 0 }: SpinningCounterProps) {
+export function SpinningCounter({ value, className = "", triggerKey = 0 }: SpinningCounterProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const isFirstMount = useRef(true);
 
+  // İlk açılışta sıfırdan sipariş numarasına doğru dönüş
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const cancel = roll(el, 0, value, true);
+    return () => cancel?.();
+  }, [value]);
 
-    // İlk açılışta sıfırdan sipariş numarasına doğru dönüş
-    let cancel = roll(el, 0, value, true);
-    let timerId: number | undefined;
-
-    // Seyrek ve her kart için tamamen asenkron döngü (12s - 18s)
-    const scheduleNextSpin = (isFirst = false) => {
-      // İlk turda her kartın başlangıç gecikmesi farklı olsun (index bazlı stagger + rastgele offset)
-      const delay = isFirst
-        ? 8000 + (index * 3800) % 14000 + Math.random() * 2500
-        : 12000 + Math.random() * 6000;
-
-      timerId = window.setTimeout(() => {
-        if (!el) return;
-        cancel?.();
-        cancel = roll(el, value, value, true);
-        scheduleNextSpin(false);
-      }, delay);
-    };
-
-    scheduleNextSpin(true);
-
-    return () => {
-      cancel?.();
-      if (timerId !== undefined) {
-        clearTimeout(timerId);
-      }
-    };
-  }, [value, index]);
+  // triggerKey her değiştiğinde (her 15 saniyede bir tetiklendiğinde) tambur dönüşü
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    const el = ref.current;
+    if (!el) return;
+    const cancel = roll(el, value, value, true);
+    return () => cancel?.();
+  }, [triggerKey, value]);
 
   return <div ref={ref} className={`t-reel ${className}`} />;
 }
