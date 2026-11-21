@@ -223,13 +223,28 @@ export function CustomerPage() {
       <header className="customer-hero">
         <div className="d-flex flex-wrap align-items-start justify-content-between gap-3">
           <div>
-            <div className="d-flex align-items-center gap-2 mb-1">
-              <img
-                src="/CantinOS_anim_sidebar.gif"
-                alt="CantinOS"
-                style={{ height: '28px', width: 'auto', borderRadius: '4px', objectFit: 'contain' }}
-              />
-              <span className="text-uppercase small fw-semibold" style={{ letterSpacing: '0.12em', opacity: 0.85 }}>
+            <div className="d-flex align-items-center gap-3 mb-2">
+              <div
+                style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '12px',
+                  padding: '6px 14px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+                }}
+              >
+                <img
+                  src="/CantinOS_anim_sidebar.gif"
+                  alt="CantinOS"
+                  style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
+                />
+              </div>
+              <span
+                className="fw-bold text-white"
+                style={{ fontSize: '1.9rem', letterSpacing: '0.03em', lineHeight: 1 }}
+              >
                 CantinOS
               </span>
             </div>
