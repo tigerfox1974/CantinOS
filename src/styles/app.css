@@ -354,19 +354,36 @@ a {
 }
 
 .waiting-number.is-ready {
-  background: rgba(92, 184, 92, 0.18);
-  border-color: rgba(92, 184, 92, 0.65);
-  color: #b7f0b7;
-  animation: ready-pop 1.8s ease-in-out infinite;
+  background: rgba(92, 184, 92, 0.22);
+  border-color: rgba(92, 184, 92, 0.8);
+  color: #c8fcc8;
+  box-shadow: 0 0 20px rgba(92, 184, 92, 0.4);
+  animation: ready-heartbeat 1.8s ease-in-out infinite;
 }
 
-@keyframes ready-pop {
-  0%,
+@keyframes ready-heartbeat {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(92, 184, 92, 0.35);
+  }
+  12% {
+    transform: scale(1.08);
+    box-shadow: 0 0 35px rgba(92, 184, 92, 0.75);
+    border-color: #5cb85c;
+  }
+  24% {
+    transform: scale(1.02);
+    box-shadow: 0 0 22px rgba(92, 184, 92, 0.45);
+  }
+  38% {
+    transform: scale(1.12);
+    box-shadow: 0 0 45px rgba(92, 184, 92, 0.85);
+    border-color: #7de67d;
+  }
+  65%,
   100% {
     transform: scale(1);
-  }
-  50% {
-    transform: scale(1.025);
+    box-shadow: 0 0 16px rgba(92, 184, 92, 0.35);
   }
 }
 

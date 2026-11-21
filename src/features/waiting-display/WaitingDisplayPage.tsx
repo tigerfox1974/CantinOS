@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { AnimatedCounter } from '../../components/AnimatedCounter'
 import { ErrorAlert } from '../../components/Feedback'
 import { publicApi } from '../../lib/api'
 import { formatDate, formatTime, formatWeekday } from '../../lib/format'
@@ -119,7 +120,7 @@ export function WaitingDisplayPage() {
               <div className="waiting-numbers">
                 {ready.map((order) => (
                   <div key={order.orderNumber} className="waiting-number is-ready">
-                    {order.orderNumber}
+                    <AnimatedCounter value={order.orderNumber} duration={0.9} />
                   </div>
                 ))}
               </div>
