@@ -44,6 +44,7 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
   const [activeCategoryId, setActiveCategoryId] = useState<string>('ALL')
   const [searchQuery, setSearchQuery] = useState('')
   const [cart, setCart] = useState<CartLine[]>([])
+  const [isCartExpanded, setIsCartExpanded] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null)
   const [receivedText, setReceivedText] = useState('')
   const [customerName, setCustomerName] = useState('')
@@ -228,8 +229,8 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
 
   return (
     <div className="row g-3">
-      {/* SOL: POS Menü ve Canlı Ürün Arama (%68 - %70 Genişlik) */}
-      <div className="col-12 col-lg-7 col-xl-8">
+      {/* SOL: POS Menü ve Canlı Ürün Arama */}
+      <div className={isCartExpanded ? 'col-12 col-lg-7 col-xl-7' : 'col-12 col-lg-7 col-xl-8'}>
         <section className="pos-menu-card surface-card p-3 h-100 d-flex flex-column" aria-labelledby="cashier-menu-heading">
           <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
             <h2 id="cashier-menu-heading" className="h5 mb-0 d-flex align-items-center gap-2">
@@ -407,13 +408,26 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
         </section>
       </div>
 
-      {/* SAĞ: Canlı Sepet ve Ödeme Paneli (%30 - %32 Genişlik - Her Zaman Açık) */}
-      <div className="col-12 col-lg-5 col-xl-4">
+      {/* SAĞ: Canlı Sepet ve Ödeme Paneli (Genişletilebilir) */}
+      <div className={isCartExpanded ? 'col-12 col-lg-5 col-xl-5' : 'col-12 col-lg-5 col-xl-4'}>
         <form className="cashier-cart surface-card p-3" onSubmit={handleSubmit} noValidate>
           <div className="d-flex align-items-center justify-content-between gap-2 mb-2 pb-2 border-bottom">
             <div className="d-flex align-items-center gap-2">
               <h2 className="h5 mb-0">Sepet</h2>
               <span className="badge text-bg-secondary">{cart.length} satır</span>
+
+              {/* Sepeti Genişlet / Daralt Butonu (Yalnızca masaüstünde görünür) */}
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary d-none d-lg-inline-flex align-items-center gap-1 py-0 px-2"
+                style={{ fontSize: '0.75rem', height: '24px', borderRadius: '6px' }}
+                onClick={() => setIsCartExpanded((prev) => !prev)}
+                title={isCartExpanded ? 'Sepeti daralt (Standart POS boyutu)' : 'Sepet sütununu genişlet'}
+                aria-label={isCartExpanded ? 'Sepeti daralt' : 'Sepeti genişlet'}
+              >
+                <span aria-hidden="true">{isCartExpanded ? '⤡' : '⤢'}</span>
+                <span>{isCartExpanded ? 'Daralt' : 'Genişlet'}</span>
+              </button>
             </div>
 
             {cart.length > 0 ? (

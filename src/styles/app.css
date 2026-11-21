@@ -1620,17 +1620,18 @@ a {
   overflow: hidden;
 }
 
-/* Kasa POS 2 Sütunlu Eşit Seviye Kart Mimarisi (Masaüstü) */
+/* Kasa POS 2 Sütunlu Eşit Seviye ve Uzatılmış Kart Mimarisi (Masaüstü) */
 @media (min-width: 992px) {
   .pos-menu-card,
   .cashier-cart {
-    height: calc(100vh - 175px);
-    max-height: calc(100vh - 175px);
+    height: calc(100vh - 105px);
+    max-height: calc(100vh - 105px);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    position: relative;
-    top: auto;
+    position: sticky;
+    top: 14px;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .pos-menu-card {
@@ -1648,8 +1649,6 @@ a {
   .cashier-cart {
     overflow-y: auto;
     overflow-x: hidden;
-    position: relative !important;
-    top: auto !important;
   }
 }
 
@@ -1671,8 +1670,8 @@ a {
 }
 
 .pos-cart-list {
-  max-height: 340px;
-  min-height: 140px;
+  max-height: 420px;
+  min-height: 180px;
   overflow-y: auto;
   padding-right: 4px;
   flex: 1 1 auto;
