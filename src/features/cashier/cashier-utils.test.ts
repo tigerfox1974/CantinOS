@@ -6,6 +6,8 @@ import {
   calculateChange,
   cartTotal,
   clampQuantity,
+  getProductQuickModifiers,
+  getQuickCashPresets,
   isCashSufficient,
   validateOrderForm,
 } from './cashier-utils'
@@ -36,6 +38,18 @@ describe('kasa sepet kuralları', () => {
     expect(cartTotal(lines)).toBe(85)
     expect(calculateChange(100, 85)).toBe(15)
     expect(isCashSufficient(84.99, 85)).toBe(false)
+  })
+
+  it('sepet tutarına göre akıllı hızlı nakit banknot önerileri üretir', () => {
+    expect(getQuickCashPresets(72)).toEqual([72, 100, 200, 500])
+    expect(getQuickCashPresets(18)).toEqual([18, 20, 50, 100])
+    expect(getQuickCashPresets(0)).toEqual([])
+  })
+
+  it('ürün adına göre hızlı opsiyon/not hapları listesi döner', () => {
+    expect(getProductQuickModifiers('Kaşarlı Tost')).toContain('🍅 Domatessiz')
+    expect(getProductQuickModifiers('Türk Kahvesi')).toContain('Orta')
+    expect(getProductQuickModifiers('Su')).toContain('Paket Olsun')
   })
 
   it('yetersiz nakitli siparişi reddeder', () => {

@@ -105,6 +105,68 @@ export function calculateChange(received: number, total: number): number {
   return difference > 0 ? difference : 0
 }
 
+/**
+ * Sepet tutarına göre akıllı hızlı nakit banknot önerileri üretir.
+ * Örn: 72 TL için [72, 100, 200, 500]
+ */
+export function getQuickCashPresets(total: number): number[] {
+  if (total <= 0) return []
+  const presets = new Set<number>()
+  presets.add(roundMoney(total))
+
+  const standardBanknotes = [10, 20, 50, 100, 200, 500]
+  for (const b of standardBanknotes) {
+    if (b >= total && presets.size < 4) {
+      presets.add(b)
+    }
+  }
+
+  if (total > 500) {
+    const next100 = Math.ceil(total / 100) * 100
+    presets.add(next100)
+    presets.add(next100 + 100)
+  }
+
+  return Array.from(presets)
+    .sort((a, b) => a - b)
+    .slice(0, 4)
+}
+
+/**
+ * Ürün adına göre tek tıkla eklenebilecek hızlı opsiyon/not hapları listesi döner.
+ */
+export function getProductQuickModifiers(productName: string): string[] {
+  const lower = productName.toLocaleLowerCase('tr-TR')
+
+  if (
+    lower.includes('tost') ||
+    lower.includes('sandviç') ||
+    lower.includes('ekmek') ||
+    lower.includes('burger')
+  ) {
+    return ['🍅 Domatessiz', 'Ketçapsız', 'Mayonezsiz', 'Acılı', 'İyi Pişmiş']
+  }
+
+  if (lower.includes('kahve') || lower.includes('çay')) {
+    return ['Şekersiz', 'Az Şekerli', 'Orta', 'Şekerli', 'Sütlü']
+  }
+
+  if (
+    lower.includes('poğaça') ||
+    lower.includes('börek') ||
+    lower.includes('simit') ||
+    lower.includes('açma')
+  ) {
+    return ['Sıcak Olsun', 'Isıtılsın', 'Peynirli', 'Zeytinli']
+  }
+
+  if (lower.includes('sıcak') || lower.includes('çorba') || lower.includes('yemek')) {
+    return ['Ekmekli', 'Ekstresiz', 'Tuzsuz', 'Limonlu']
+  }
+
+  return ['Paket Olsun', 'Ayrı Paket', 'Isıtılsın']
+}
+
 export function isCashSufficient(received: number, total: number): boolean {
   return received + 0.005 >= total
 }

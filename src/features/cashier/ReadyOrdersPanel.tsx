@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ConfirmDialog } from '../../components/Dialogs'
 import { EmptyState, ErrorAlert, LoadingBlock } from '../../components/Feedback'
 import {
@@ -29,6 +29,8 @@ interface ReadyOrdersPanelProps {
   onShowReceipt: (receipt: CashierOrderResult) => void
 }
 
+type TabFilter = 'ALL' | 'READY' | 'PREPARING'
+
 export function ReadyOrdersPanel({
   token,
   orders,
@@ -37,6 +39,8 @@ export function ReadyOrdersPanel({
   onChanged,
   onShowReceipt,
 }: ReadyOrdersPanelProps) {
+  const [tabFilter, setTabFilter] = useState<TabFilter>('ALL')
+  const [searchQuery, setSearchQuery] = useState('')
   const [cashOrder, setCashOrder] = useState<StaffOrder | null>(null)
   const [cashReceived, setCashReceived] = useState('')
   const [deliverOrder, setDeliverOrder] = useState<StaffOrder | null>(null)
@@ -48,6 +52,27 @@ export function ReadyOrdersPanel({
   const cashReceivedValue = parseMoneyInput(cashReceived)
   const cashChange = calculateChange(cashReceivedValue, cashRemaining)
   const cashInsufficient = cashOrder !== null && !isCashSufficient(cashReceivedValue, cashRemaining)
+
+  const readyCount = useMemo(() => orders.filter((o) => o.status === 'READY').length, [orders])
+  const preparingCount = useMemo(() => orders.filter((o) => o.status === 'PREPARING').length, [orders])
+
+  const filteredOrders = useMemo(() => {
+    return orders.filter((order) => {
+      if (tabFilter === 'READY' && order.status !== 'READY') return false
+      if (tabFilter === 'PREPARING' && order.status !== 'PREPARING') return false
+
+      if (searchQuery.trim().length > 0) {
+        const query = searchQuery.trim().toLocaleLowerCase('tr-TR')
+        const matchNum = order.orderNumber.toString().includes(query)
+        const matchName = order.customerName
+          ? order.customerName.toLocaleLowerCase('tr-TR').includes(query)
+          : false
+        return matchNum || matchName
+      }
+
+      return true
+    })
+  }, [orders, tabFilter, searchQuery])
 
   function openCashDialog(order: StaffOrder) {
     setError(null)
@@ -165,12 +190,79 @@ export function ReadyOrdersPanel({
   }
 
   return (
-    <section aria-labelledby="ready-orders-heading">
-      <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
-        <h2 id="ready-orders-heading" className="h5 mb-0">
-          Hazır / Teslim Bekleyenler
+    <section className="ready-orders-station surface-card p-3" aria-labelledby="ready-orders-heading">
+      {/* Başlık ve Sayaç */}
+      <div className="d-flex align-items-center justify-content-between gap-2 mb-2 pb-2 border-bottom">
+        <h2 id="ready-orders-heading" className="h5 mb-0 d-flex align-items-center gap-2">
+          <span>Hazır / Teslim Bekleyenler</span>
+          <span className="badge text-bg-secondary">{orders.length}</span>
         </h2>
-        <span className="badge text-bg-secondary">{orders.length}</span>
+      </div>
+
+      {/* Canlı Filtre Sekmeleri: Tümü, Hazır, Hazırlanıyor */}
+      <div className="d-flex flex-wrap gap-1 mb-2" role="tablist" aria-label="Sipariş durumu filtreleri">
+        <button
+          type="button"
+          role="tab"
+          className={`btn btn-sm ${tabFilter === 'ALL' ? 'btn-primary' : 'btn-outline-secondary'}`}
+          aria-selected={tabFilter === 'ALL'}
+          onClick={() => setTabFilter('ALL')}
+        >
+          Tümü ({orders.length})
+        </button>
+        <button
+          type="button"
+          role="tab"
+          className={`btn btn-sm ${
+            tabFilter === 'READY'
+              ? 'btn-success fw-bold'
+              : readyCount > 0
+              ? 'btn-outline-success fw-semibold'
+              : 'btn-outline-secondary'
+          }`}
+          aria-selected={tabFilter === 'READY'}
+          onClick={() => setTabFilter('READY')}
+        >
+          🟢 Hazır ({readyCount})
+        </button>
+        <button
+          type="button"
+          role="tab"
+          className={`btn btn-sm ${
+            tabFilter === 'PREPARING'
+              ? 'btn-warning fw-bold text-dark'
+              : preparingCount > 0
+              ? 'btn-outline-warning text-dark'
+              : 'btn-outline-secondary'
+          }`}
+          aria-selected={tabFilter === 'PREPARING'}
+          onClick={() => setTabFilter('PREPARING')}
+        >
+          🟡 Hazırlanıyor ({preparingCount})
+        </button>
+      </div>
+
+      {/* Hızlı Sipariş No / Müşteri Arama */}
+      <div className="input-group input-group-sm mb-3">
+        <span className="input-group-text bg-white">🔍</span>
+        <input
+          type="search"
+          className="form-control"
+          placeholder="# Sipariş No veya müşteri ara..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Siparişlerde ara"
+        />
+        {searchQuery ? (
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => setSearchQuery('')}
+            aria-label="Aramayı temizle"
+          >
+            ✕
+          </button>
+        ) : null}
       </div>
 
       {error ? (
@@ -188,19 +280,40 @@ export function ReadyOrdersPanel({
       {!loading && orders.length === 0 ? (
         <EmptyState
           title="Teslim bekleyen sipariş yok"
-          description="Mutfak siparişi hazır olarak işaretlediğinde burada görünür."
+          description="Mutfak siparişi hazır olarak işaretlediğinde burada görünecektir."
         />
       ) : null}
 
-      <div className="d-flex flex-column gap-3">
-        {orders.map((order) => {
+      {!loading && orders.length > 0 && filteredOrders.length === 0 ? (
+        <div className="text-center py-4 text-muted border rounded-3 bg-light">
+          <div style={{ fontSize: '1.5rem', marginBottom: '6px' }}>🔍</div>
+          <div className="small fw-semibold">Filtreye uygun sipariş bulunamadı</div>
+          <button
+            type="button"
+            className="btn btn-sm btn-link mt-1"
+            onClick={() => {
+              setTabFilter('ALL')
+              setSearchQuery('')
+            }}
+          >
+            Filtreleri Sıfırla
+          </button>
+        </div>
+      ) : null}
+
+      {/* Sipariş Kartları Listesi */}
+      <div className="ready-orders-scroll-list d-flex flex-column gap-3">
+        {filteredOrders.map((order) => {
           const problems = openProblems(order)
           const remaining = remainingAmount(order)
+          const isReady = order.status === 'READY'
 
           return (
             <article
               key={order.id}
-              className={`ready-order-card${problems.length > 0 ? ' has-problem' : ''}`}
+              className={`ready-order-card${isReady ? ' is-ready-active' : ''}${
+                problems.length > 0 ? ' has-problem' : ''
+              }`}
             >
               <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
                 <div>
@@ -211,18 +324,25 @@ export function ReadyOrdersPanel({
                     <PaymentStatusBadge status={order.paymentStatus} />
                   </div>
                   <div className="small muted mt-1">
-                    {order.customerName ? `Müşteri: ${order.customerName}` : 'Müşteri adı belirtilmedi'}
+                    {order.customerName ? (
+                      <span>Müşteri: <strong>{order.customerName}</strong></span>
+                    ) : (
+                      'Müşteri adı belirtilmedi'
+                    )}
                   </div>
                 </div>
                 <div className="text-end">
                   <div className="small muted">Toplam</div>
-                  <div className="fw-bold text-tabular">{formatMoney(order.totalAmount)}</div>
+                  <div className="fw-bold text-tabular text-primary" style={{ fontSize: '1.1rem' }}>
+                    {formatMoney(order.totalAmount)}
+                  </div>
                 </div>
               </div>
 
-              {order.generalNote ? <div className="order-general-note">{order.generalNote}</div> : null}
+              {order.generalNote ? <div className="order-general-note mb-2">{order.generalNote}</div> : null}
 
-              <ul className="order-items">
+              {/* Sipariş Ürünleri */}
+              <ul className="order-items mb-2">
                 {order.items.map((item, index) => (
                   <li key={`${item.productId}-${index}`}>
                     <div className="d-flex justify-content-between gap-2">
@@ -236,23 +356,19 @@ export function ReadyOrdersPanel({
                 ))}
               </ul>
 
-              <div className="total-row mb-2">
-                <span>Toplam</span>
-                <span className="amount">{formatMoney(order.totalAmount)}</span>
-              </div>
-
               {remaining > 0 && order.paidAmount > 0 ? (
                 <div className="small muted mb-2">
-                  Ödenen: {formatMoney(order.paidAmount)} · Kalan: {formatMoney(remaining)}
+                  Ödenen: {formatMoney(order.paidAmount)} · Kalan: <strong>{formatMoney(remaining)}</strong>
                 </div>
               ) : null}
 
+              {/* Mutfak Problemleri */}
               {problems.map((problem) => (
                 <div
                   key={problem.id}
                   className={`problem-box mb-2${problem.informedAt ? ' is-cleared' : ''}`}
                 >
-                  <div className="fw-semibold">{problemLabel(problem.problemType)}</div>
+                  <div className="fw-semibold text-danger">{problemLabel(problem.problemType)}</div>
                   {problem.note ? <div>{problem.note}</div> : null}
                   <div className="small muted">
                     {formatDateTime(problem.reportedAt)} · {problem.reportedByName ?? 'Mutfak'}
@@ -285,65 +401,70 @@ export function ReadyOrdersPanel({
                 </div>
               ))}
 
-              <div className="order-actions">
+              {/* Hızlı Aksiyon Butonları */}
+              <div className="order-actions pt-2 border-top mt-2">
+                {/* Ödeme Bekleniyorsa */}
                 {order.paymentStatus === 'WAITING' ? (
-                  <>
+                  <div className="d-flex flex-wrap gap-2 w-100 mb-2">
                     <button
                       type="button"
-                      className="btn btn-sm btn-success"
+                      className="btn btn-sm btn-success flex-fill"
                       disabled={busy}
                       onClick={() => openCashDialog(order)}
                     >
-                      Nakit Ödeme Al
+                      💵 Nakit Al
                     </button>
                     <button
                       type="button"
-                      className="btn btn-sm btn-primary"
+                      className="btn btn-sm btn-primary flex-fill"
                       disabled={busy}
                       onClick={() => void takeCardPayment(order)}
                     >
-                      Kart Ödemesi Al
+                      💳 Kart Al
                     </button>
-                  </>
+                  </div>
                 ) : null}
 
+                {/* Teslime Hazır Sipariş için Dev Yeşil Buton */}
                 {canDeliver(order) ? (
                   <button
                     type="button"
-                    className="btn btn-sm btn-outline-success"
+                    className="btn btn-success w-100 fw-bold py-2 mb-2 d-flex align-items-center justify-content-center gap-2"
                     disabled={busy}
                     onClick={() => {
                       setError(null)
                       setDeliverOrder(order)
                     }}
                   >
-                    Teslim Edildi
+                    <span>✔</span>
+                    <span>Siparişi Teslim Et</span>
                   </button>
                 ) : null}
 
-                {order.paymentStatus === 'PAID' && order.status !== 'READY' ? (
-                  <span className="small muted">Mutfak hazır olunca teslim edilebilir.</span>
-                ) : null}
+                <div className="d-flex align-items-center justify-content-between w-100">
+                  {order.paymentStatus === 'PAID' && order.status !== 'READY' ? (
+                    <span className="small text-warning-emphasis">⏳ Mutfak hazırlıyor...</span>
+                  ) : order.paymentStatus === 'REFUND_PENDING' ? (
+                    <span className="small text-danger">İade bekliyor.</span>
+                  ) : <span />}
 
-                {order.paymentStatus === 'REFUND_PENDING' ? (
-                  <span className="small text-danger">İade bekliyor.</span>
-                ) : null}
-
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-secondary"
-                  disabled={busy}
-                  onClick={() => onShowReceipt(buildOrderReceipt(order, cashierName))}
-                  title="Satış fişini görüntüle veya yazdır"
-                >
-                  🧾 Fiş
-                </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={busy}
+                    onClick={() => onShowReceipt(buildOrderReceipt(order, cashierName))}
+                    title="Satış fişini görüntüle veya yazdır"
+                  >
+                    🧾 Fiş
+                  </button>
+                </div>
               </div>
             </article>
           )
         })}
       </div>
 
+      {/* Nakit Ödeme Modal */}
       <ConfirmDialog
         open={cashOrder !== null}
         title={cashOrder ? `Nakit Ödeme Al · #${cashOrder.orderNumber}` : 'Nakit Ödeme Al'}
@@ -365,7 +486,7 @@ export function ReadyOrdersPanel({
         </label>
         <input
           id="cash-payment-received"
-          className="form-control form-control-lg"
+          className="form-control form-control-lg text-tabular fw-bold"
           inputMode="decimal"
           value={cashReceived}
           onChange={(event) => setCashReceived(event.target.value)}
@@ -382,18 +503,18 @@ export function ReadyOrdersPanel({
         ) : null}
       </ConfirmDialog>
 
+      {/* Teslim Et Onay Modalı */}
       <ConfirmDialog
         open={deliverOrder !== null}
-        title="Teslim Edildi"
+        title="Siparişi Teslim Et"
         message={
           deliverOrder ? (
             <div>
-              <strong>#{deliverOrder.orderNumber}</strong> numaralı sipariş teslim edildi olarak
-              işaretlensin mi?
+              <strong>#{deliverOrder.orderNumber}</strong> numaralı sipariş teslim edilsin ve fişi açılsın mı?
             </div>
           ) : null
         }
-        confirmLabel="Teslim Edildi"
+        confirmLabel="Teslim Et & Fiş Aç"
         variant="success"
         busy={busy}
         onConfirm={() => void confirmDelivered()}

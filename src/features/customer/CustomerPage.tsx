@@ -10,6 +10,7 @@ import { CheckoutForm } from './CheckoutForm'
 import { OrderSuccessModal } from './OrderSuccessModal'
 import { ProductCard } from './ProductCard'
 import { formatMoney } from '../../lib/format'
+import { getCategoryIcon } from '../../lib/utils'
 import {
   MAX_LINE_NOTE,
   MAX_LINE_QUANTITY,
@@ -30,21 +31,6 @@ function findProduct(menu: PublicMenu, productId: string): MenuProduct | null {
 function clampLineQuantity(value: number): number {
   if (!Number.isFinite(value)) return 1
   return Math.min(MAX_LINE_QUANTITY, Math.max(1, Math.trunc(value)))
-}
-
-function getCategoryIcon(name: string): string {
-  const lower = name.toLocaleLowerCase('tr-TR')
-  if (lower.includes('tost') || lower.includes('sandviç') || lower.includes('ekmek') || lower.includes('burger')) return '🥪'
-  if (lower.includes('içecek') || lower.includes('kahve') || lower.includes('çay') || lower.includes('su') || lower.includes('kola') || lower.includes('soda') || lower.includes('ayran')) return '🥤'
-  if (lower.includes('atıştırmalık') || lower.includes('cips') || lower.includes('kraker') || lower.includes('bisküvi') || lower.includes('kuruyemiş')) return '🍟'
-  if (lower.includes('tatlı') || lower.includes('çikolata') || lower.includes('kek') || lower.includes('pasta') || lower.includes('waffle')) return '🍰'
-  if (lower.includes('dondurma')) return '🍦'
-  if (lower.includes('poğaça') || lower.includes('börek') || lower.includes('simit') || lower.includes('açma') || lower.includes('unlu')) return '🥐'
-  if (lower.includes('sıcak') || lower.includes('yemek') || lower.includes('çorba')) return '🍲'
-  if (lower.includes('salata') || lower.includes('meyve')) return '🥗'
-  if (lower.includes('döner') || lower.includes('dürüm')) return '🌯'
-  if (lower.includes('pizza')) return '🍕'
-  return '🍴'
 }
 
 export function CustomerPage() {

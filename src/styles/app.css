@@ -1419,17 +1419,196 @@ a {
   font-weight: 600;
 }
 
-/* ---------------- Kasa ---------------- */
-.cashier-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
-  gap: 20px;
-  align-items: start;
+/* ---------------- Kasa (POS 2 Sütunlu Mimari) ---------------- */
+.cashier-layout-wrapper {
+  width: 100%;
+  margin: 0 auto;
 }
 
 .cashier-cart {
   position: sticky;
   top: 16px;
+}
+
+.cashier-delivery-alert-btn {
+  animation: delivery-btn-pulse 2.2s infinite ease-in-out;
+  box-shadow: 0 0 12px rgba(40, 167, 69, 0.4);
+}
+
+@keyframes delivery-btn-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 18px rgba(40, 167, 69, 0.65);
+  }
+}
+
+/* ---------------- Kasa (POS) & Dokunmatik Menü Tasarımı ---------------- */
+.pos-search-wrapper {
+  position: relative;
+}
+
+.pos-search-kbd {
+  font-family: monospace;
+  font-size: 0.8rem;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: #64748b;
+  margin-left: 6px;
+}
+
+.pos-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.pos-product-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--ob-line);
+  background: #ffffff;
+  color: var(--ob-ink);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  user-select: none;
+  min-height: 98px;
+  box-shadow: 0 2px 6px rgba(31, 45, 61, 0.04);
+}
+
+.pos-product-tile:hover:not(:disabled) {
+  border-color: #2fa4d9;
+  background: #fbfdff;
+  box-shadow: 0 4px 14px rgba(47, 164, 217, 0.18);
+  transform: translateY(-2px);
+}
+
+.pos-product-tile:active:not(:disabled) {
+  transform: scale(0.96);
+  background: rgba(47, 164, 217, 0.06);
+}
+
+.pos-product-tile.in-cart {
+  border-color: #1f7fa8;
+  background: rgba(47, 164, 217, 0.05);
+}
+
+.pos-product-tile.is-closed {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #f8fafc;
+}
+
+.pos-tile-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: linear-gradient(135deg, #1f7fa8, #2fa4d9);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(31, 127, 168, 0.4);
+  line-height: 1.2;
+}
+
+.pos-tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.pos-tile-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.pos-tile-price {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1f7fa8;
+}
+
+.pos-tile-name {
+  font-weight: 650;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  margin-bottom: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pos-tile-desc {
+  font-size: 0.75rem;
+  color: var(--ob-muted);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pos-cart-list {
+  max-height: calc(100vh - 460px);
+  min-height: 120px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.pos-quick-modifiers {
+  margin-bottom: 4px;
+}
+
+.btn-mod-chip {
+  cursor: pointer;
+  font-size: 0.72rem;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.btn-mod-chip:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.pos-total-box {
+  background: #f8fafc;
+}
+
+.pos-change-display {
+  background: #edf7ed;
+  border: 1px solid #c8e6c9;
+}
+
+.ready-orders-station {
+  min-height: calc(100vh - 160px);
+}
+
+.ready-orders-scroll-list {
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .ready-order-card {
@@ -1439,6 +1618,23 @@ a {
   background: #fff;
   padding: 14px;
   box-shadow: var(--ob-shadow);
+  transition: all 0.2s ease;
+}
+
+.ready-order-card.is-ready-active {
+  border-left: 6px solid #5cb85c;
+  background: rgba(92, 184, 92, 0.03);
+  box-shadow: 0 4px 16px rgba(92, 184, 92, 0.12);
+  animation: ready-border-pulse 3s infinite ease-in-out;
+}
+
+@keyframes ready-border-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(92, 184, 92, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(92, 184, 92, 0.28);
+  }
 }
 
 .ready-order-card.has-problem {
