@@ -134,33 +134,70 @@ export function getQuickCashPresets(total: number): number[] {
 
 /**
  * Ürün adına göre tek tıkla eklenebilecek hızlı opsiyon/not hapları listesi döner.
+ * Ürünün türüne (soğuk sandviç, sıcak tost, sıcak içecek, soğuk içecek vb.) göre
+ * anlamlı ve mantıklı seçenekler sunar.
  */
 export function getProductQuickModifiers(productName: string): string[] {
   const lower = productName.toLocaleLowerCase('tr-TR')
 
+  // Soğuk sandviçler (ton balıklı, soğuk sandviç vb.) -> Asla 'İyi Pişmiş' veya 'Ketçapsız' içermez!
+  if (
+    lower.includes('ton balık') ||
+    lower.includes('soğuk sandviç') ||
+    lower.includes('deli') ||
+    (lower.includes('sandviç') && !lower.includes('sıcak') && !lower.includes('tost'))
+  ) {
+    return ['🍅 Domatessiz', 'Mayonezsiz', 'Mısırsız', 'Yeşilliksiz', 'Turşusuz']
+  }
+
+  // Sıcak tostlar ve sıcak sandviçler
   if (
     lower.includes('tost') ||
-    lower.includes('sandviç') ||
-    lower.includes('ekmek') ||
+    lower.includes('sıcak sandviç') ||
+    lower.includes('ekmek arası') ||
     lower.includes('burger')
   ) {
     return ['🍅 Domatessiz', 'Ketçapsız', 'Mayonezsiz', 'Acılı', 'İyi Pişmiş']
   }
 
-  if (lower.includes('kahve') || lower.includes('çay')) {
+  // Sıcak İçecekler (Çay, Kahve vb.)
+  if (
+    lower.includes('kahve') ||
+    lower.includes('çay') ||
+    lower.includes('latte') ||
+    lower.includes('cappuccino') ||
+    lower.includes('espresso')
+  ) {
     return ['Şekersiz', 'Az Şekerli', 'Orta', 'Şekerli', 'Sütlü']
   }
 
+  // Soğuk İçecekler (Ayran, Su, Meyve Suyu, Meşrubat, Kola, Soda)
+  if (
+    lower.includes('ayran') ||
+    lower.includes('su') ||
+    lower.includes('meyve suyu') ||
+    lower.includes('kola') ||
+    lower.includes('soda') ||
+    lower.includes('gazoz') ||
+    lower.includes('soğuk çay') ||
+    lower.includes('ice tea')
+  ) {
+    return ['Soğuk', 'Oda Sıcaklığı', 'Pipetli', 'Buzlu']
+  }
+
+  // Hamur işi / Pastane (Poğaça, Börek, Simit, Açma)
   if (
     lower.includes('poğaça') ||
     lower.includes('börek') ||
     lower.includes('simit') ||
-    lower.includes('açma')
+    lower.includes('açma') ||
+    lower.includes('kurabiye')
   ) {
-    return ['Sıcak Olsun', 'Isıtılsın', 'Peynirli', 'Zeytinli']
+    return ['Isıtılsın', 'Peynirli', 'Zeytinli', 'Çıtır']
   }
 
-  if (lower.includes('sıcak') || lower.includes('çorba') || lower.includes('yemek')) {
+  // Sıcak yemekler / Çorbalar
+  if (lower.includes('sıcak') || lower.includes('çorba') || lower.includes('yemek') || lower.includes('pilav')) {
     return ['Ekmekli', 'Ekstresiz', 'Tuzsuz', 'Limonlu']
   }
 

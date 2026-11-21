@@ -48,8 +48,13 @@ describe('kasa sepet kuralları', () => {
 
   it('ürün adına göre hızlı opsiyon/not hapları listesi döner', () => {
     expect(getProductQuickModifiers('Kaşarlı Tost')).toContain('🍅 Domatessiz')
+    expect(getProductQuickModifiers('Kaşarlı Tost')).toContain('İyi Pişmiş')
+    // Ton Balıklı Sandviç soğuk sandviçtir, asla 'İyi Pişmiş' içermemeli, 'Mısırsız' veya 'Mayonezsiz' içermeli
+    expect(getProductQuickModifiers('Ton Balıklı Sandviç')).toContain('Mayonezsiz')
+    expect(getProductQuickModifiers('Ton Balıklı Sandviç')).toContain('Mısırsız')
+    expect(getProductQuickModifiers('Ton Balıklı Sandviç')).not.toContain('İyi Pişmiş')
     expect(getProductQuickModifiers('Türk Kahvesi')).toContain('Orta')
-    expect(getProductQuickModifiers('Su')).toContain('Paket Olsun')
+    expect(getProductQuickModifiers('Ayran')).toContain('Soğuk')
   })
 
   it('yetersiz nakitli siparişi reddeder', () => {
