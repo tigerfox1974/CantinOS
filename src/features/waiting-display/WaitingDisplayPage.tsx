@@ -106,7 +106,47 @@ export function WaitingDisplayPage() {
               <div className="waiting-numbers">
                 {preparing.map((order) => (
                   <div key={order.orderNumber} className="waiting-number is-preparing">
-                    {order.orderNumber}
+                    <span>{order.orderNumber}</span>
+                    <svg
+                      className="canteen-cooking-icon"
+                      viewBox="0 0 36 36"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      {/* Yükselen Sıcaklık Buharları */}
+                      <path
+                        className="steam-line steam-1"
+                        d="M11 12C11 9.5 13 9.5 13 7"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        className="steam-line steam-2"
+                        d="M18 11C18 8.5 20 8.5 20 6"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        className="steam-line steam-3"
+                        d="M25 12C25 9.5 27 9.5 27 7"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+
+                      {/* Tost / Sandviç Gövdesi */}
+                      <g className="toast-body">
+                        {/* Üst Ekmek */}
+                        <path d="M6 19C6 16.5 8.5 15 18 15C27.5 15 30 16.5 30 19H6Z" fill="currentColor" />
+                        {/* İç Malzeme / Eriyen Kaşar Dalgası */}
+                        <path d="M5 22.5H31" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                        {/* Alt Ekmek */}
+                        <rect x="6" y="25.5" width="24" height="3.5" rx="1.75" fill="currentColor" />
+                      </g>
+                    </svg>
                   </div>
                 ))}
               </div>

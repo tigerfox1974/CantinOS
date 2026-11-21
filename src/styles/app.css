@@ -425,9 +425,60 @@ a {
 }
 
 .waiting-number.is-preparing {
-  background: rgba(240, 173, 78, 0.16);
-  border-color: rgba(240, 173, 78, 0.55);
-  color: #ffd28a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: #2b3236;
+  border: 1.5px solid #9e8456;
+  color: #f7c670;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Kantin İkonu Boyutu */
+.canteen-cooking-icon {
+  width: 36px;
+  height: 36px;
+  color: #f7c670;
+  flex-shrink: 0;
+}
+
+/* Yükselen Buhar Animasyonu */
+.steam-line {
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+  animation: steamRise 1.8s infinite ease-in-out;
+}
+
+.steam-1 { animation-delay: 0s; }
+.steam-2 { animation-delay: 0.45s; }
+.steam-3 { animation-delay: 0.9s; }
+
+/* Tost/Sandviç Hafif Isınma Nabzı */
+.toast-body {
+  transform-origin: center;
+  animation: gentleWarm 1.8s infinite ease-in-out;
+}
+
+@keyframes steamRise {
+  0% {
+    stroke-dashoffset: 12;
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -12;
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes gentleWarm {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .waiting-number.is-ready {
