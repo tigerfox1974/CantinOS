@@ -124,22 +124,79 @@ export function WaitingDisplayPage() {
           Siparişler yükleniyor…
         </div>
       ) : !data ? null : total === 0 ? (
-        <div className="text-center py-5">
-          <p className="display-6 fw-bold mb-2" style={{ color: 'rgba(255,255,255,0.9)' }}>
-            Şu an hazırlanan sipariş yok
-          </p>
-          <p className="mb-0" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            Siparişler hazırlanmaya başladığında numaralar burada görünür.
-          </p>
+        <div className="waiting-fullscreen-empty" role="status" aria-label="Şu an hazırlanan sipariş yok">
+          <div className="waiting-pulse-avatar-wrap">
+            <div className="waiting-pulse-ring ring-1" aria-hidden="true" />
+            <div className="waiting-pulse-ring ring-2" aria-hidden="true" />
+            <div className="waiting-pulse-ring ring-3" aria-hidden="true" />
+            <div className="waiting-avatar-card">
+              <img
+                src="/CantinOS_anim.gif"
+                alt="CantinOS"
+                className="waiting-avatar-img"
+              />
+            </div>
+          </div>
+
+          <div className="waiting-fullscreen-info">
+            <div className="waiting-live-badge">
+              <span className="live-dot" aria-hidden="true" />
+              <span>Canlı Sipariş Sistemi Aktif</span>
+            </div>
+            <h2 className="waiting-fullscreen-title">Şu an hazırlanan sipariş yok</h2>
+            <p className="waiting-fullscreen-desc">
+              Siparişler mutfakta hazırlanmaya başladığında numaralar burada anlık olarak görünecektir.
+            </p>
+            <div className="waiting-steps-flow" aria-label="Sipariş adımları">
+              <div className="waiting-step-item">
+                <span className="step-circle">1</span>
+                <span>Menüden Seçin</span>
+              </div>
+              <span className="step-arrow" aria-hidden="true">→</span>
+              <div className="waiting-step-item">
+                <span className="step-circle">2</span>
+                <span>Siparişi Verin</span>
+              </div>
+              <span className="step-arrow" aria-hidden="true">→</span>
+              <div className="waiting-step-item">
+                <span className="step-circle">3</span>
+                <span>Ekrandan Takip Edin</span>
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="waiting-grid">
           <section className="waiting-column" aria-label="Hazırlanıyor">
             <h2 className="waiting-column-title is-preparing-title">Hazırlanıyor</h2>
             {preparing.length === 0 ? (
-              <p className="text-center small mb-0 py-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                Bekleyen sipariş yok
-              </p>
+              <div className="waiting-empty-column-card is-preparing-empty" role="status" aria-label="Bekleyen sipariş yok">
+                <div className="empty-icon-halo is-preparing-halo">
+                  <svg
+                    className="empty-column-svg"
+                    viewBox="0 0 64 64"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path className="steam-line steam-1" d="M26 12c-1.5 2-1.5 4 0 6s1.5 4 0 6" />
+                    <path className="steam-line steam-2" d="M32 9c-1.5 2-1.5 4 0 6s1.5 4 0 6" />
+                    <path className="steam-line steam-3" d="M38 12c-1.5 2-1.5 4 0 6s1.5 4 0 6" />
+                    <circle cx="32" cy="27" r="3" fill="currentColor" />
+                    <path d="M14 46c0-9.94 8.06-18 18-18s18 8.06 18 18H14z" />
+                    <line x1="10" y1="50" x2="54" y2="50" strokeWidth="3" />
+                  </svg>
+                </div>
+                <div className="empty-column-title">Bekleyen sipariş yok</div>
+                <div className="empty-column-sub">Yeni siparişler mutfağa ulaştığında burada sıralanır.</div>
+                <div className="empty-column-tag is-preparing-tag">
+                  <span className="empty-mini-dot is-amber" aria-hidden="true" />
+                  <span>Mutfak Hazır</span>
+                </div>
+              </div>
             ) : (
               <div className="waiting-numbers">
                 {preparing.map((order) => (
@@ -156,9 +213,33 @@ export function WaitingDisplayPage() {
           <section className="waiting-column" aria-label="Hazır">
             <h2 className="waiting-column-title is-ready-title">Hazır</h2>
             {ready.length === 0 ? (
-              <p className="text-center small mb-0 py-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                Hazır sipariş yok
-              </p>
+              <div className="waiting-empty-column-card is-ready-empty" role="status" aria-label="Hazır sipariş yok">
+                <div className="empty-icon-halo is-ready-halo">
+                  <svg
+                    className="empty-column-svg"
+                    viewBox="0 0 64 64"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="32" cy="18" r="3" fill="currentColor" />
+                    <line x1="32" y1="21" x2="32" y2="25" strokeWidth="3" />
+                    <path d="M16 46c0-8.84 7.16-16 16-16s16 7.16 16 16H16z" />
+                    <line x1="12" y1="50" x2="52" y2="50" strokeWidth="3" />
+                    <path className="bell-wave wave-1" d="M12 28a24 24 0 0 0-4 12" />
+                    <path className="bell-wave wave-2" d="M52 28a24 24 0 0 1 4 12" />
+                  </svg>
+                </div>
+                <div className="empty-column-title">Hazır sipariş yok</div>
+                <div className="empty-column-sub">Hazırlanan siparişler tamamlandığında burada duyurulur.</div>
+                <div className="empty-column-tag is-ready-tag">
+                  <span className="empty-mini-dot is-green" aria-hidden="true" />
+                  <span>Teslimat Bekleniyor</span>
+                </div>
+              </div>
             ) : (
               <div className="waiting-numbers">
                 {ready.map((order, index) => (
