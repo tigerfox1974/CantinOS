@@ -657,11 +657,15 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
             </div>
           ) : null}
 
-          {/* Müşteri Adı ve Sipariş Notu (Kompakt) */}
+          {/* Müşteri Adı ve Sipariş Notu (Kompakt ve Kusursuz Yatay Hiza) */}
           <div className="row g-2 mt-2">
-            <div className="col-12 col-md-6">
-              <label className="form-label small muted mb-1" htmlFor="cashier-customer-name">
-                Müşteri Adı <span className="text-secondary">(isteğe bağlı)</span>
+            <div className="col-6">
+              <label
+                className="form-label small text-secondary mb-1 text-truncate d-block"
+                htmlFor="cashier-customer-name"
+                title="Müşteri Adı (isteğe bağlı)"
+              >
+                Müşteri Adı
               </label>
               <input
                 id="cashier-customer-name"
@@ -673,9 +677,13 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
                 onChange={(event) => setCustomerName(event.target.value)}
               />
             </div>
-            <div className="col-12 col-md-6">
-              <label className="form-label small muted mb-1" htmlFor="cashier-general-note">
-                Sipariş Notu <span className="text-secondary">(isteğe bağlı)</span>
+            <div className="col-6">
+              <label
+                className="form-label small text-secondary mb-1 text-truncate d-block"
+                htmlFor="cashier-general-note"
+                title="Sipariş Notu (isteğe bağlı)"
+              >
+                Sipariş Notu
               </label>
               <input
                 id="cashier-general-note"
