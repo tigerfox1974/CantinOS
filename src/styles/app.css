@@ -345,6 +345,65 @@ a {
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Transitions.dev — Spinning counter */
+:root {
+  --reel-step-dur: 130ms;
+  --reel-stagger: 90ms;
+  --reel-ease: cubic-bezier(0.35, -0.02, 0.43, 1);
+  --reel-cell: 1.2em;
+  --reel-side-scale: 0.7;
+  --reel-side-offset: 0.52em;
+  --reel-side-blur: max(0.067em, 0.171em - 2.1px);
+  --reel-side-opacity: 0.17;
+  --reel-center-scale: 0.9;
+  --reel-center-blur: 0.042em;
+  --reel-antic-dur: 100ms;
+  --reel-antic-scale: 0.94;
+  --reel-antic-lift: 0.125em;
+  --reel-land-dur: 740ms;
+  --reel-land-peak: 1.03;
+}
+
+.t-reel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--reel-cell);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--reel-cell);
+}
+.t-reel-col {
+  position: relative;
+  display: inline-block;
+  height: var(--reel-cell);
+  line-height: var(--reel-cell);
+}
+.t-reel-sizer {
+  visibility: hidden;
+}
+.t-reel-digit {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, filter, opacity;
+}
+.t-reel-sep {
+  display: inline-block;
+  height: var(--reel-cell);
+  line-height: var(--reel-cell);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-reel-digit {
+    filter: none !important;
+  }
 }
 
 .waiting-number.is-preparing {
