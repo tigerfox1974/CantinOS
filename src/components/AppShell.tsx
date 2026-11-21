@@ -20,7 +20,11 @@ export function AppShell({ children, fluid = false }: { children: ReactNode; flu
       <nav className="navbar navbar-expand navbar-dark bg-primary app-navbar">
         <div className={fluid ? 'container-fluid px-3 px-lg-4' : 'container'}>
           <NavLink className="navbar-brand d-flex align-items-center gap-2" to={roleHome(session.staff.role)}>
-            <span aria-hidden="true">🍽️</span>
+            <img
+              src="/CantinOS_anim_sidebar.gif"
+              alt="CantinOS"
+              style={{ height: '30px', width: 'auto', borderRadius: '4px', objectFit: 'contain' }}
+            />
             <span className="fw-semibold">CantinOS</span>
           </NavLink>
 

@@ -38,8 +38,18 @@ export function LoginPage() {
       <div className="login-card card shadow-lg border-0">
         <div className="card-body p-4 p-md-5">
           <div className="text-center mb-4">
-            <div className="login-mark" aria-hidden="true">
-              🍽️
+            <div className="mb-3 d-flex justify-content-center" aria-hidden="true">
+              <img
+                src="/CantinOS_anim.gif"
+                alt="CantinOS"
+                style={{
+                  maxWidth: '220px',
+                  width: '100%',
+                  height: 'auto',
+                  borderRadius: '12px',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.08)',
+                }}
+              />
             </div>
             <h1 className="h4 mt-3 mb-1">Personel Girişi</h1>
             <p className="text-body-secondary mb-0">CantinOS İşletme Yönetimi</p>

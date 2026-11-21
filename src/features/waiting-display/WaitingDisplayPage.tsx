@@ -36,11 +36,18 @@ export function WaitingDisplayPage() {
   return (
     <div className="waiting-screen">
       <header className="waiting-header">
-        <div>
-          <p className="text-uppercase small mb-1" style={{ letterSpacing: '0.18em', color: 'rgba(255,255,255,0.6)' }}>
-            CantinOS
-          </p>
-          <h1 className="h2 fw-bold mb-0">Sipariş Ekranı</h1>
+        <div className="d-flex align-items-center gap-3">
+          <img
+            src="/CantinOS_anim.gif"
+            alt="CantinOS"
+            style={{ height: '52px', width: 'auto', borderRadius: '8px', objectFit: 'contain' }}
+          />
+          <div>
+            <p className="text-uppercase small mb-0" style={{ letterSpacing: '0.18em', color: 'rgba(255,255,255,0.6)' }}>
+              CantinOS
+            </p>
+            <h1 className="h2 fw-bold mb-0">Sipariş Ekranı</h1>
+          </div>
         </div>
         <div className="text-end">
           <div className="display-4 fw-bold text-tabular lh-1">{formatTime(now)}</div>

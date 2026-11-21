@@ -5,9 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#2fa4d9" />
     <meta name="description" content="CantinOS canlı sipariş ve işletme yönetim sistemi" />
+    <link rel="icon" type="image/gif" href="/CantinOS_anim.gif" />
+    <link rel="preload" as="image" href="/CantinOS_anim.gif" />
     <title>CantinOS</title>
+    <style>
+      /* CantinOS Açılış Logosu & Başlangıç Yükleme Ekranı */
+      #cantinos-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at center, #ffffff 0%, #edf2f7 100%);
+        opacity: 1;
+        transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.45s ease;
+        user-select: none;
+        cursor: pointer;
+      }
+      #cantinos-splash.fade-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .cantinos-splash-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 520px;
+        width: 88%;
+        padding: 24px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08), 0 0 1px rgba(15, 23, 42, 0.12);
+        animation: cantinos-splash-pop 0.35s ease-out;
+      }
+      @keyframes cantinos-splash-pop {
+        from { transform: scale(0.96); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      .cantinos-splash-logo {
+        width: 100%;
+        max-height: 280px;
+        aspect-ratio: 16 / 9;
+        object-fit: contain;
+        display: block;
+      }
+      .cantinos-splash-bar {
+        width: 180px;
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 99px;
+        overflow: hidden;
+        margin-top: 18px;
+        position: relative;
+      }
+      .cantinos-splash-progress {
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, #1f7fa8, #2fa4d9);
+        border-radius: 99px;
+        animation: cantinos-progress 1.5s ease-in-out infinite;
+      }
+      @keyframes cantinos-progress {
+        0% { transform: translateX(-100%); }
+        50% { transform: translateX(120%); }
+        100% { transform: translateX(250%); }
+      }
+      .cantinos-splash-sub {
+        margin-top: 12px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #64748b;
+        letter-spacing: 0.04em;
+      }
+    </style>
   </head>
   <body>
+    <div id="cantinos-splash" role="dialog" aria-label="CantinOS Başlatılıyor" title="Atlamak için tıklayın">
+      <div class="cantinos-splash-card">
+        <img src="/CantinOS_anim.gif" alt="CantinOS" class="cantinos-splash-logo" />
+        <div class="cantinos-splash-bar">
+          <div class="cantinos-splash-progress"></div>
+        </div>
+        <div class="cantinos-splash-sub">CantinOS Başlatılıyor...</div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var splash = document.getElementById('cantinos-splash');
+        if (!splash) return;
+        var dismissed = false;
+        function dismiss() {
+          if (dismissed) return;
+          dismissed = true;
+          splash.classList.add('fade-out');
+          setTimeout(function() {
+            if (splash.parentNode) splash.parentNode.removeChild(splash);
+          }, 500);
+        }
+        splash.addEventListener('click', dismiss);
+        window.addEventListener('keydown', dismiss, { once: true });
+
+        var minDuration = 2000;
+        var startTime = performance.now();
+        function finish() {
+          var elapsed = performance.now() - startTime;
+          var remaining = Math.max(100, minDuration - elapsed);
+          setTimeout(dismiss, remaining);
+        }
+        if (document.readyState === 'complete') {
+          finish();
+        } else {
+          window.addEventListener('load', finish);
+          setTimeout(dismiss, 3500);
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
