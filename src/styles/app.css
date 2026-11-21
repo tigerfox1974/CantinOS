@@ -428,26 +428,26 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  background-color: #262c30;
-  border: 1.5px solid rgba(247, 198, 112, 0.45);
+  gap: 14px;
+  background-color: #2b3236;
+  border: 1.5px solid #9e8456;
   color: #f7c670;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  animation: cooking-glow 2.8s ease-in-out infinite;
-  will-change: transform, box-shadow, border-color;
 }
 
 .waiting-number.is-preparing span {
-  text-shadow: 0 0 16px rgba(247, 198, 112, 0.45);
+  letter-spacing: 0.02em;
 }
 
-/* Kantin İkonu Boyutu */
+/* Kantin Sandviç & Buhar İkonu: Sıcak Altın Sarısı Neon Işıma ve Pişme Nabzı */
 .canteen-cooking-icon {
   width: 36px;
   height: 36px;
   color: #f7c670;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 6px rgba(247, 198, 112, 0.35));
+  transform-origin: center;
+  animation: sandwich-cooking-glow 2.8s ease-in-out infinite;
+  will-change: transform, filter;
 }
 
 /* Yükselen Buhar Animasyonu */
@@ -461,10 +461,9 @@ a {
 .steam-2 { animation-delay: 0.45s; }
 .steam-3 { animation-delay: 0.9s; }
 
-/* Tost/Sandviç Sıcaklık Nabzı */
+/* Tost/Sandviç Gövdesi */
 .toast-body {
   transform-origin: center;
-  animation: gentleWarm 2.8s infinite ease-in-out;
 }
 
 @keyframes steamRise {
@@ -483,51 +482,28 @@ a {
   }
 }
 
-@keyframes gentleWarm {
+/* Sadece Sandviç ve Buharına Uygulanan Sıcak Neon Işıma Nabzı */
+@keyframes sandwich-cooking-glow {
   0%, 100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 0px transparent);
-  }
-  45% {
-    transform: scale(1.08);
-    filter: drop-shadow(0 0 10px rgba(247, 198, 112, 0.9));
-  }
-}
-
-/* Ocak / Izgara Sıcaklığı ve Altın Sarısı Neon Hale */
-@keyframes cooking-glow {
-  0% {
-    transform: scale(1);
-    border-color: rgba(247, 198, 112, 0.35);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    filter: drop-shadow(0 0 2px rgba(247, 198, 112, 0.3));
   }
   25% {
     /* Isınma başlangıcı */
-    transform: scale(1.02);
-    border-color: rgba(247, 198, 112, 0.65);
-    box-shadow: 0 0 22px rgba(247, 198, 112, 0.45), inset 0 0 10px rgba(247, 198, 112, 0.1);
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 6px rgba(247, 198, 112, 0.6));
   }
   45% {
-    /* Sıcaklık ve neon parlaması zirvesi: yemek pişiyor / ızgara ışıltısı */
-    transform: scale(1.045);
-    border-color: #f7c670;
-    box-shadow:
-      0 0 32px rgba(247, 198, 112, 0.75),
-      0 0 60px rgba(247, 198, 112, 0.35),
-      inset 0 0 16px rgba(247, 198, 112, 0.18);
+    /* Sıcaklık ve altın sarısı neon parlaması zirvesi */
+    transform: scale(1.1);
+    filter:
+      drop-shadow(0 0 8px rgba(247, 198, 112, 0.95))
+      drop-shadow(0 0 16px rgba(255, 183, 77, 0.75));
   }
   65% {
-    /* Yumuşakça sönümlenme */
-    transform: scale(1.015);
-    border-color: rgba(247, 198, 112, 0.55);
-    box-shadow: 0 0 22px rgba(247, 198, 112, 0.4), inset 0 0 8px rgba(247, 198, 112, 0.08);
-  }
-  85%,
-  100% {
-    /* Dinlenme / sonraki sıcaklık dalgasına hazırlık */
-    transform: scale(1);
-    border-color: rgba(247, 198, 112, 0.35);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    /* Yavaşça sönümlenme */
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 5px rgba(247, 198, 112, 0.5));
   }
 }
 
