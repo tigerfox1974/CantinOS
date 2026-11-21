@@ -21,11 +21,7 @@ export function CartPanel({ lines, onQuantityChange, onNoteChange, onRemove, chi
   const count = cartCount(lines)
 
   return (
-    <aside
-      className="cart-panel"
-      aria-label="Sepet ve sipariş bilgileri"
-      style={{ maxHeight: 'calc(100vh - 32px)', overflowY: 'auto' }}
-    >
+    <aside className="cart-panel" aria-label="Sepet ve sipariş bilgileri">
       <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
         <h2 className="h5 mb-0">Sepetim</h2>
         <span className="badge text-bg-primary">{count} ürün</span>
