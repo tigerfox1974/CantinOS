@@ -273,7 +273,7 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
           </div>
 
           {/* Kategori Hapları (Tam genişlikte yatay kaydırılabilir + PC için Sol/Sağ Ok Tuşları) */}
-          <div className="category-strip-wrapper mb-3" style={{ minWidth: 0, width: '100%' }}>
+          <div className="pos-category-nav-wrapper mb-3">
             <div className="category-scroll-container">
               <button
                 type="button"
@@ -704,7 +704,7 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
           {/* Siparişi Tamamla Butonu */}
           <button
             type="submit"
-            className="btn btn-success btn-lg w-100 mt-3 d-flex align-items-center justify-content-center gap-2 fw-bold"
+            className="btn btn-success btn-lg w-100 cashier-submit-btn d-flex align-items-center justify-content-center gap-2 fw-bold"
             disabled={busy || validationMessage !== null}
           >
             {busy ? (

@@ -1425,11 +1425,6 @@ a {
   margin: 0 auto;
 }
 
-.cashier-cart {
-  position: sticky;
-  top: 16px;
-}
-
 .cashier-delivery-alert-btn {
   animation: delivery-btn-pulse 2.2s infinite ease-in-out;
   box-shadow: 0 0 12px rgba(40, 167, 69, 0.4);
@@ -1462,38 +1457,52 @@ a {
   margin-left: 6px;
 }
 
+.pos-category-nav-wrapper {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+}
+
+.pos-category-nav-wrapper::after,
+.category-scroll-container::after {
+  display: none !important;
+}
+
 .category-scroll-container {
   display: flex;
   align-items: center;
   position: relative;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
 }
 
 .category-nav-arrow {
-  flex: 0 0 32px;
-  width: 32px;
-  height: 38px;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 40px;
   border-radius: 10px;
-  border: 1px solid var(--ob-line);
+  border: 1.5px solid #2fa4d9;
   background: #ffffff;
   color: #1f7fa8;
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(31, 127, 168, 0.18);
+  position: relative;
+  z-index: 10;
+  opacity: 1 !important;
 }
 
 .category-nav-arrow:hover {
   background: #1f7fa8;
   color: #ffffff;
   border-color: #1f7fa8;
-  box-shadow: 0 2px 6px rgba(31, 127, 168, 0.25);
+  box-shadow: 0 3px 10px rgba(31, 127, 168, 0.35);
 }
 
 .category-nav-arrow:active {
@@ -1609,17 +1618,36 @@ a {
 .cashier-cart {
   position: sticky;
   top: 16px;
-  max-height: calc(100vh - 32px);
+  max-height: calc(100vh - 84px);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.cashier-cart::-webkit-scrollbar {
+  width: 5px;
+}
+
+.cashier-cart::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 .pos-cart-list {
-  min-height: 180px;
-  max-height: 380px;
-  flex: 1 1 auto;
+  max-height: 240px;
+  min-height: 70px;
   overflow-y: auto;
   padding-right: 4px;
+  flex: 0 1 auto;
+}
+
+.cashier-submit-btn {
+  margin-top: 14px;
+  margin-bottom: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
 }
 
 .cashier-cart .cart-line {
