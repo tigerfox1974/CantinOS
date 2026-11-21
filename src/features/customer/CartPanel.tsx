@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { formatMoney } from '../../lib/format'
 import {
   cartCount,
@@ -20,9 +20,59 @@ export function CartPanel({ lines, onQuantityChange, onNoteChange, onRemove, chi
   const total = cartTotal(lines)
   const count = cartCount(lines)
 
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isDocked, setIsDocked] = useState(false)
+  const [dockStyle, setDockStyle] = useState<CSSProperties>({})
+
+  useEffect(() => {
+    function updateDock() {
+      if (window.innerWidth <= 992) {
+        setIsDocked(false)
+        setDockStyle({})
+        return
+      }
+
+      const container = containerRef.current
+      if (!container) return
+
+      const rect = container.getBoundingClientRect()
+      const TARGET_TOP = 130
+
+      if (rect.top <= TARGET_TOP) {
+        setIsDocked(true)
+        setDockStyle({
+          position: 'fixed',
+          top: `${TARGET_TOP}px`,
+          left: `${rect.left}px`,
+          width: `${rect.width}px`,
+          maxHeight: `calc(100vh - ${TARGET_TOP + 16}px)`,
+          overflowY: 'auto',
+          zIndex: 20,
+        })
+      } else {
+        setIsDocked(false)
+        setDockStyle({})
+      }
+    }
+
+    window.addEventListener('scroll', updateDock, { passive: true })
+    window.addEventListener('resize', updateDock, { passive: true })
+    updateDock()
+
+    return () => {
+      window.removeEventListener('scroll', updateDock)
+      window.removeEventListener('resize', updateDock)
+    }
+  }, [])
+
   return (
-    <aside className="cart-panel" aria-label="Sepet ve sipariş bilgileri">
-      <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
+    <div ref={containerRef} className="cart-column">
+      <aside
+        className={`cart-panel${isDocked ? ' is-docked' : ''}`}
+        style={isDocked ? dockStyle : undefined}
+        aria-label="Sepet ve sipariş bilgileri"
+      >
+        <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
         <h2 className="h5 mb-0">Sepetim</h2>
         <span className="badge text-bg-primary">{count} ürün</span>
       </div>
@@ -128,6 +178,7 @@ export function CartPanel({ lines, onQuantityChange, onNoteChange, onRemove, chi
       </div>
 
       {children ? <div className="mt-3">{children}</div> : null}
-    </aside>
+      </aside>
+    </div>
   )
 }

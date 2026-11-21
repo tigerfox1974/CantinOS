@@ -389,16 +389,20 @@ a {
   padding: 6px 8px;
 }
 
+.cart-column {
+  width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
 .cart-panel {
-  position: sticky;
-  top: 130px;
-  max-height: calc(100vh - 146px);
-  overflow-y: auto;
   border: 1px solid var(--ob-line);
   border-radius: var(--ob-radius);
   background: var(--ob-surface);
   box-shadow: var(--ob-shadow);
   padding: 18px;
+  max-height: calc(100vh - 146px);
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
 }
@@ -1203,9 +1207,12 @@ a {
 
   .cart-panel,
   .cashier-cart {
-    position: static;
-    max-height: none;
-    overflow-y: visible;
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    width: 100% !important;
+    left: auto !important;
+    top: auto !important;
   }
 }
 
