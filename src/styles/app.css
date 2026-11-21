@@ -424,86 +424,90 @@ a {
   }
 }
 
+/* ---------------- Hazırlanıyor: Dönen Gradient Çerçeve ve Shine Numarası ---------------- */
 .waiting-number.is-preparing {
-  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  padding: 2.5px;
+  background: #14181b;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  background-color: #2b3236;
-  border: 1.5px solid #9e8456;
-  color: #f7c670;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
 }
 
-.waiting-number.is-preparing span {
-  letter-spacing: 0.02em;
+/* 360 Derece Dönen Sıcak Amber / Turuncu Gradient Işık Çerçevesi */
+.waiting-number.is-preparing::before {
+  position: absolute;
+  content: '';
+  display: block;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: linear-gradient(90deg, transparent 20%, #ff9966 45%, #ffbb66 50%, #ff9966 55%, transparent 80%);
+  animation: rotation_481 4500ms infinite linear;
+  z-index: 1;
 }
 
-/* Kantin Sandviç & Buhar İkonu: Sıcak Altın Sarısı Neon Işıma ve Pişme Nabzı */
-.canteen-cooking-icon {
-  width: 36px;
-  height: 36px;
-  color: #f7c670;
-  flex-shrink: 0;
-  transform-origin: center;
-  animation: sandwich-cooking-glow 2.8s ease-in-out infinite;
-  will-change: transform, filter;
-}
-
-/* Yükselen Buhar Animasyonu */
-.steam-line {
-  stroke-dasharray: 12;
-  stroke-dashoffset: 12;
-  animation: steamRise 1.8s infinite ease-in-out;
-}
-
-.steam-1 { animation-delay: 0s; }
-.steam-2 { animation-delay: 0.45s; }
-.steam-3 { animation-delay: 0.9s; }
-
-/* Tost/Sandviç Gövdesi */
-.toast-body {
-  transform-origin: center;
-}
-
-@keyframes steamRise {
+@keyframes rotation_481 {
   0% {
-    stroke-dashoffset: 12;
-    opacity: 0;
-    transform: translateY(3px);
-  }
-  50% {
-    opacity: 1;
+    transform: rotateZ(0deg);
   }
   100% {
-    stroke-dashoffset: -12;
-    opacity: 0;
-    transform: translateY(-4px);
+    transform: rotateZ(360deg);
   }
 }
 
-/* Sadece Sandviç ve Buharına Uygulanan Sıcak Neon Işıma Nabzı */
-@keyframes sandwich-cooking-glow {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 2px rgba(247, 198, 112, 0.3));
+/* Kartın Koyu İç Gövdesi */
+.preparing-card-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background-color: #20272b;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45);
+}
+
+/* Numaradaki Altın Sarısı + Beyaz Işıma (Shine) Animasyonu */
+.order-num-shine {
+  display: inline-block;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    90deg,
+    #d4a034 0%,
+    #d4a034 25%,
+    #ffffff 50%,
+    #f7c670 65%,
+    #d4a034 100%
+  );
+  background-size: 250% 100%;
+  background-position: -150% 0;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shine 3.2s infinite linear;
+  animation-fill-mode: forwards;
+  text-shadow: 0 0 20px rgba(247, 198, 112, 0.25);
+}
+
+@keyframes text-shine {
+  0% {
+    background-position: 150% 0;
   }
-  25% {
-    /* Isınma başlangıcı */
-    transform: scale(1.03);
-    filter: drop-shadow(0 0 6px rgba(247, 198, 112, 0.6));
+  60% {
+    background-position: -100% 0;
   }
-  45% {
-    /* Sıcaklık ve altın sarısı neon parlaması zirvesi */
-    transform: scale(1.1);
-    filter:
-      drop-shadow(0 0 8px rgba(247, 198, 112, 0.95))
-      drop-shadow(0 0 16px rgba(255, 183, 77, 0.75));
-  }
-  65% {
-    /* Yavaşça sönümlenme */
-    transform: scale(1.02);
-    filter: drop-shadow(0 0 5px rgba(247, 198, 112, 0.5));
+  100% {
+    background-position: -100% 0;
   }
 }
 

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { DynamicCookingIcon } from '../../components/DynamicCookingIcon'
 import { SpinningCounter } from '../../components/SpinningCounter'
 import { ErrorAlert } from '../../components/Feedback'
 import { publicApi } from '../../lib/api'
@@ -145,8 +144,9 @@ export function WaitingDisplayPage() {
               <div className="waiting-numbers">
                 {preparing.map((order) => (
                   <div key={order.orderNumber} className="waiting-number is-preparing">
-                    <span>{order.orderNumber}</span>
-                    <DynamicCookingIcon />
+                    <div className="preparing-card-inner">
+                      <span className="order-num-shine">{order.orderNumber}</span>
+                    </div>
                   </div>
                 ))}
               </div>
