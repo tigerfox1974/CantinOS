@@ -123,9 +123,13 @@ export function WaitingDisplayPage() {
               </p>
             ) : (
               <div className="waiting-numbers">
-                {ready.map((order) => (
-                  <div key={order.orderNumber} className="waiting-number is-ready">
-                    <SpinningCounter value={order.orderNumber} />
+                {ready.map((order, index) => (
+                  <div
+                    key={order.orderNumber}
+                    className="waiting-number is-ready"
+                    style={{ animationDelay: `${(index * 0.85) % 2.6}s` }}
+                  >
+                    <SpinningCounter value={order.orderNumber} index={index} />
                   </div>
                 ))}
               </div>

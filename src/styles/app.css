@@ -370,7 +370,7 @@ a {
 
 /* Transitions.dev — Spinning counter */
 :root {
-  --reel-step-dur: 130ms;
+  --reel-step-dur: 155ms;
   --reel-stagger: 90ms;
   --reel-ease: cubic-bezier(0.35, -0.02, 0.43, 1);
   --reel-cell: 1.2em;
@@ -383,7 +383,7 @@ a {
   --reel-antic-dur: 100ms;
   --reel-antic-scale: 0.94;
   --reel-antic-lift: 0.125em;
-  --reel-land-dur: 740ms;
+  --reel-land-dur: 820ms;
   --reel-land-peak: 1.03;
 }
 
@@ -512,7 +512,7 @@ a {
   border-color: rgba(92, 184, 92, 0.8);
   color: #c8fcc8;
   box-shadow: 0 0 20px rgba(92, 184, 92, 0.4);
-  animation: ready-heartbeat 1.8s ease-in-out infinite;
+  animation: ready-heartbeat 2.6s ease-in-out infinite;
 }
 
 @keyframes ready-heartbeat {

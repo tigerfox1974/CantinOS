@@ -57,7 +57,7 @@ function readTokens(el: HTMLElement): Tokens {
   const bezierParams = m ? (m[1].split(",").map(parseFloat) as [number, number, number, number]) : ([0.35, -0.02, 0.43, 1] as [number, number, number, number]);
 
   return {
-    stepDur: token("--reel-step-dur", 130),
+    stepDur: token("--reel-step-dur", 155),
     stagger: token("--reel-stagger", 90),
     ease: bezier(bezierParams),
     offset: length(el, "--reel-side-offset", 0.52),
@@ -69,7 +69,7 @@ function readTokens(el: HTMLElement): Tokens {
     anticDur: token("--reel-antic-dur", 100),
     anticScale: token("--reel-antic-scale", 0.94),
     anticLift: length(el, "--reel-antic-lift", 0.125),
-    landDur: token("--reel-land-dur", 740),
+    landDur: token("--reel-land-dur", 820),
     landPeak: token("--reel-land-peak", 1.03),
   };
 }
@@ -279,9 +279,10 @@ function roll(el: HTMLElement, from: number, to: number, forceSpin = false): () 
 export interface SpinningCounterProps {
   value: number;
   className?: string;
+  index?: number;
 }
 
-export function SpinningCounter({ value, className = "" }: SpinningCounterProps) {
+export function SpinningCounter({ value, className = "", index = 0 }: SpinningCounterProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -292,18 +293,22 @@ export function SpinningCounter({ value, className = "" }: SpinningCounterProps)
     let cancel = roll(el, 0, value, true);
     let timerId: number | undefined;
 
-    // Her 3 blinkte bir (1 blink ~ 1.8s => 3 blink = ~5.4s) + rastgele varyasyon (4.8s - 6.8s)
-    const scheduleNextSpin = () => {
-      const nextDelay = 4800 + Math.random() * 2000;
+    // Seyrek ve her kart için tamamen asenkron döngü (12s - 18s)
+    const scheduleNextSpin = (isFirst = false) => {
+      // İlk turda her kartın başlangıç gecikmesi farklı olsun (index bazlı stagger + rastgele offset)
+      const delay = isFirst
+        ? 8000 + (index * 3800) % 14000 + Math.random() * 2500
+        : 12000 + Math.random() * 6000;
+
       timerId = window.setTimeout(() => {
         if (!el) return;
         cancel?.();
         cancel = roll(el, value, value, true);
-        scheduleNextSpin();
-      }, nextDelay);
+        scheduleNextSpin(false);
+      }, delay);
     };
 
-    scheduleNextSpin();
+    scheduleNextSpin(true);
 
     return () => {
       cancel?.();
@@ -311,7 +316,7 @@ export function SpinningCounter({ value, className = "" }: SpinningCounterProps)
         clearTimeout(timerId);
       }
     };
-  }, [value]);
+  }, [value, index]);
 
   return <div ref={ref} className={`t-reel ${className}`} />;
 }
