@@ -53,6 +53,9 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
   const lineKeyRef = useRef(0)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const categoryStripRef = useRef<HTMLDivElement>(null)
+  const isDraggingRef = useRef(false)
+  const startXRef = useRef(0)
+  const scrollLeftStartRef = useRef(0)
 
   // '/' tuşuna basıldığında doğrudan arama çubuğuna odaklan (kasiyer hızlı erişim kısayolu)
   useEffect(() => {
@@ -74,6 +77,33 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
   const handleCategoryWheel = (e: React.WheelEvent) => {
     if (e.deltaY !== 0 && categoryStripRef.current) {
       categoryStripRef.current.scrollLeft += e.deltaY
+    }
+  }
+
+  // Fare ile tut-çek (mouse drag-to-scroll) olayları (PC için dokunmatik benzeri deneyim)
+  const handleCategoryMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0 || !categoryStripRef.current) return
+    isDraggingRef.current = true
+    startXRef.current = e.pageX - categoryStripRef.current.offsetLeft
+    scrollLeftStartRef.current = categoryStripRef.current.scrollLeft
+  }
+
+  const handleCategoryMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingRef.current || !categoryStripRef.current) return
+    e.preventDefault()
+    const x = e.pageX - categoryStripRef.current.offsetLeft
+    const walk = (x - startXRef.current) * 1.5
+    categoryStripRef.current.scrollLeft = scrollLeftStartRef.current - walk
+  }
+
+  const handleCategoryMouseUpOrLeave = () => {
+    isDraggingRef.current = false
+  }
+
+  const scrollCategories = (direction: 'left' | 'right') => {
+    if (categoryStripRef.current) {
+      const amount = direction === 'left' ? -220 : 220
+      categoryStripRef.current.scrollBy({ left: amount, behavior: 'smooth' })
     }
   }
 
@@ -242,50 +272,76 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
             </div>
           </div>
 
-          {/* Kategori Hapları (Tam genişlikte yatay kaydırılabilir) */}
+          {/* Kategori Hapları (Tam genişlikte yatay kaydırılabilir + PC için Sol/Sağ Ok Tuşları) */}
           <div className="category-strip-wrapper mb-3" style={{ minWidth: 0, width: '100%' }}>
-            <div
-              ref={categoryStripRef}
-              className="category-strip"
-              role="group"
-              aria-label="Menü kategorileri"
-              onWheel={handleCategoryWheel}
-            >
+            <div className="category-scroll-container">
               <button
                 type="button"
-                className={`category-pill${!isSearching && activeCategoryId === 'ALL' ? ' active' : ''}`}
-                aria-pressed={!isSearching && activeCategoryId === 'ALL'}
-                onClick={() => {
-                  setActiveCategoryId('ALL')
-                  if (isSearching) setSearchQuery('')
-                }}
+                className="category-nav-arrow left"
+                onClick={() => scrollCategories('left')}
+                aria-label="Kategorileri sola kaydır"
+                title="Sola kaydır"
               >
-                <span className="category-pill-icon" aria-hidden="true">✨</span>
-                <span className="category-pill-name">Tümü</span>
-                <span className="category-pill-count">{totalProductCount}</span>
+                ‹
               </button>
 
-              {categories.map((category) => {
-                const active = !isSearching && activeCategoryId === category.id
-                return (
-                  <button
-                    key={category.id}
-                    type="button"
-                    className={`category-pill${active ? ' active' : ''}`}
-                    aria-pressed={active}
-                    onClick={() => {
-                      setActiveCategoryId(category.id)
-                      if (isSearching) setSearchQuery('')
-                    }}
-                  >
-                    <span className="category-pill-icon" aria-hidden="true">
-                      {getCategoryIcon(category.name)}
-                    </span>
-                    <span className="category-pill-name">{category.name}</span>
-                    <span className="category-pill-count">{category.products.length}</span>
-                  </button>
-                )
-              })}
+              <div
+                ref={categoryStripRef}
+                className="category-strip"
+                role="group"
+                aria-label="Menü kategorileri"
+                onWheel={handleCategoryWheel}
+                onMouseDown={handleCategoryMouseDown}
+                onMouseMove={handleCategoryMouseMove}
+                onMouseUp={handleCategoryMouseUpOrLeave}
+                onMouseLeave={handleCategoryMouseUpOrLeave}
+              >
+                <button
+                  type="button"
+                  className={`category-pill${!isSearching && activeCategoryId === 'ALL' ? ' active' : ''}`}
+                  aria-pressed={!isSearching && activeCategoryId === 'ALL'}
+                  onClick={() => {
+                    setActiveCategoryId('ALL')
+                    if (isSearching) setSearchQuery('')
+                  }}
+                >
+                  <span className="category-pill-icon" aria-hidden="true">✨</span>
+                  <span className="category-pill-name">Tümü</span>
+                  <span className="category-pill-count">{totalProductCount}</span>
+                </button>
+
+                {categories.map((category) => {
+                  const active = !isSearching && activeCategoryId === category.id
+                  return (
+                    <button
+                      key={category.id}
+                      type="button"
+                      className={`category-pill${active ? ' active' : ''}`}
+                      aria-pressed={active}
+                      onClick={() => {
+                        setActiveCategoryId(category.id)
+                        if (isSearching) setSearchQuery('')
+                      }}
+                    >
+                      <span className="category-pill-icon" aria-hidden="true">
+                        {getCategoryIcon(category.name)}
+                      </span>
+                      <span className="category-pill-name">{category.name}</span>
+                      <span className="category-pill-count">{category.products.length}</span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              <button
+                type="button"
+                className="category-nav-arrow right"
+                onClick={() => scrollCategories('right')}
+                aria-label="Kategorileri sağa kaydır"
+                title="Sağa kaydır"
+              >
+                ›
+              </button>
             </div>
           </div>
 
