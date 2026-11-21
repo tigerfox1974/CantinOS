@@ -482,7 +482,7 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
                       {/* Serbest Not Girişi */}
                       <input
                         type="text"
-                        className="form-control form-control-sm mt-1"
+                        className="form-control form-control-sm pos-cart-line-note mt-1"
                         maxLength={MAX_LINE_NOTE}
                         value={line.lineNote}
                         placeholder="Özel satır notu..."
