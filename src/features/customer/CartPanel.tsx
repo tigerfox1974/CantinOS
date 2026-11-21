@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { formatMoney } from '../../lib/format'
 import {
-  cartCount,
   cartTotal,
   MAX_LINE_NOTE,
   MAX_LINE_QUANTITY,
@@ -14,7 +13,6 @@ interface CartPanelProps {
   onNoteChange: (productId: string, note: string) => void
   onRemove: (productId: string) => void
   children?: ReactNode
-  isMobileDrawer?: boolean
 }
 
 export function CartPanel({
@@ -23,73 +21,20 @@ export function CartPanel({
   onNoteChange,
   onRemove,
   children,
-  isMobileDrawer = false,
 }: CartPanelProps) {
   const total = cartTotal(lines)
-  const count = cartCount(lines)
 
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [isDocked, setIsDocked] = useState(false)
-  const [dockStyle, setDockStyle] = useState<CSSProperties>({})
-
-  useEffect(() => {
-    if (isMobileDrawer) return
-
-    function updateDock() {
-      if (window.innerWidth <= 992) {
-        setIsDocked(false)
-        setDockStyle({})
-        return
-      }
-
-      const container = containerRef.current
-      if (!container) return
-
-      const rect = container.getBoundingClientRect()
-      const TARGET_TOP = 130
-
-      if (rect.top <= TARGET_TOP) {
-        setIsDocked(true)
-        setDockStyle({
-          position: 'fixed',
-          top: `${TARGET_TOP}px`,
-          left: `${rect.left}px`,
-          width: `${rect.width}px`,
-          maxHeight: `calc(100vh - ${TARGET_TOP + 16}px)`,
-          overflowY: 'auto',
-          zIndex: 20,
-        })
-      } else {
-        setIsDocked(false)
-        setDockStyle({})
-      }
-    }
-
-    window.addEventListener('scroll', updateDock, { passive: true })
-    window.addEventListener('resize', updateDock, { passive: true })
-    updateDock()
-
-    return () => {
-      window.removeEventListener('scroll', updateDock)
-      window.removeEventListener('resize', updateDock)
-    }
-  }, [isMobileDrawer])
-
-  const content = (
-    <>
-      {!isMobileDrawer ? (
-        <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
-          <h2 className="h5 mb-0">Sepetim</h2>
-          <span className="badge text-bg-primary">{count} ürün</span>
-        </div>
-      ) : null}
-
+  return (
+    <div className="cart-panel-content" aria-label="Sepet ve sipariş bilgileri">
       {lines.length === 0 ? (
-        <p className="text-body-secondary small mb-0">
-          Sepetiniz boş. Menüden ürün ekleyerek siparişinizi oluşturabilirsiniz.
-        </p>
+        <div className="empty-cart-message text-center py-4">
+          <div style={{ fontSize: '2.5rem', marginBottom: '8px' }} aria-hidden="true">🛒</div>
+          <p className="text-body-secondary mb-0">
+            Sepetiniz boş. Menüden ürün ekleyerek siparişinizi oluşturabilirsiniz.
+          </p>
+        </div>
       ) : (
-        <div>
+        <div className="cart-items-list">
           {lines.map((line) => {
             const unavailable = line.availabilityStatus !== 'ACTIVE'
             const unavailableText =
@@ -185,26 +130,6 @@ export function CartPanel({
       </div>
 
       {children ? <div className="mt-3">{children}</div> : null}
-    </>
-  )
-
-  if (isMobileDrawer) {
-    return (
-      <div className="cart-panel in-drawer" aria-label="Sepet ve sipariş bilgileri">
-        {content}
-      </div>
-    )
-  }
-
-  return (
-    <div ref={containerRef} className="cart-column">
-      <aside
-        className={`cart-panel${isDocked ? ' is-docked' : ''}`}
-        style={isDocked ? dockStyle : undefined}
-        aria-label="Sepet ve sipariş bilgileri"
-      >
-        {content}
-      </aside>
     </div>
   )
 }

@@ -54,7 +54,7 @@ export function CustomerPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('ALL')
   const [searchQuery, setSearchQuery] = useState('')
   const [cart, setCart] = useState<CartLine[]>([])
-  const [mobileCartOpen, setMobileCartOpen] = useState(false)
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
   const [successResult, setSuccessResult] = useState<OnlineOrderResult | null>(null)
   const [successSnapshot, setSuccessSnapshot] = useState<OrderSnapshot | null>(null)
   const [successOpen, setSuccessOpen] = useState(false)
@@ -153,7 +153,7 @@ export function CustomerPage() {
   }
 
   function handleSuccess(result: OnlineOrderResult, snapshot: OrderSnapshot) {
-    setMobileCartOpen(false)
+    setCartDrawerOpen(false)
     setSuccessResult(result)
     setSuccessSnapshot(snapshot)
     setSuccessOpen(true)
@@ -216,30 +216,47 @@ export function CustomerPage() {
     menuContent = (
       <>
         <div className="menu-nav-container" aria-label="Menü Gezintisi">
-          {/* Canlı Arama Çubuğu */}
-          <div className="menu-search-wrapper">
-            <div className="menu-search-input-group">
-              <span className="menu-search-icon" aria-hidden="true">🔍</span>
-              <input
-                type="search"
-                className="menu-search-input"
-                placeholder="Menüde ara... (ör. Tost, ayran, çikolata)"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Menüde ürün ara"
-              />
-              {searchQuery ? (
-                <button
-                  type="button"
-                  className="menu-search-clear"
-                  onClick={() => setSearchQuery('')}
-                  aria-label="Aramayı temizle"
-                  title="Aramayı temizle"
-                >
-                  ✕
-                </button>
-              ) : null}
+          {/* Arama ve Canlı Sepet Butonu */}
+          <div className="menu-nav-top">
+            <div className="menu-search-wrapper">
+              <div className="menu-search-input-group">
+                <span className="menu-search-icon" aria-hidden="true">🔍</span>
+                <input
+                  type="search"
+                  className="menu-search-input"
+                  placeholder="Menüde ara... (ör. Tost, ayran, çikolata)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  aria-label="Menüde ürün ara"
+                />
+                {searchQuery ? (
+                  <button
+                    type="button"
+                    className="menu-search-clear"
+                    onClick={() => setSearchQuery('')}
+                    aria-label="Aramayı temizle"
+                    title="Aramayı temizle"
+                  >
+                    ✕
+                  </button>
+                ) : null}
+              </div>
             </div>
+
+            {/* Masaüstü Canlı Sepet Butonu */}
+            <button
+              type="button"
+              className={`nav-cart-btn${mobileCount > 0 ? ' has-items' : ''}`}
+              onClick={() => setCartDrawerOpen(true)}
+              aria-label={`Sepeti aç (${mobileCount} ürün)`}
+            >
+              <span className="nav-cart-icon" aria-hidden="true">🛒</span>
+              <span className="nav-cart-label">Sepetim</span>
+              <span className="nav-cart-count">{mobileCount}</span>
+              {mobileCount > 0 ? (
+                <span className="nav-cart-total text-tabular">{formatMoney(mobileTotal)}</span>
+              ) : null}
+            </button>
           </div>
 
           {/* Kiosk Kategori Şeridi */}
@@ -287,7 +304,7 @@ export function CustomerPage() {
         </div>
 
         <div className="customer-layout">
-          <section aria-labelledby="menu-heading">
+          <section aria-labelledby="menu-heading" className="w-100">
             <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-3">
               <h2 id="menu-heading" className="h4 mb-0">
                 {headingTitle}
@@ -327,20 +344,6 @@ export function CustomerPage() {
               </div>
             )}
           </section>
-
-          <CartPanel
-            lines={cart}
-            onQuantityChange={handleQuantityChange}
-            onNoteChange={handleNoteChange}
-            onRemove={handleRemove}
-          >
-            <CheckoutForm
-              key={formVersion}
-              lines={cart}
-              orderingEnabled={menu.onlineOrderingEnabled}
-              onSuccess={handleSuccess}
-            />
-          </CartPanel>
         </div>
       </>
     )
@@ -438,7 +441,7 @@ export function CustomerPage() {
       {menuContent}
 
       {/* Mobil Yüzen Sepet Çubuğu */}
-      {mobileCount > 0 && !mobileCartOpen ? (
+      {mobileCount > 0 && !cartDrawerOpen ? (
         <aside className="mobile-cart-bar" aria-label="Mobil Sepet">
           <div className="mobile-cart-bar-info">
             <span className="mobile-cart-bar-badge">{mobileCount} ürün</span>
@@ -447,49 +450,48 @@ export function CustomerPage() {
           <button
             type="button"
             className="btn btn-primary rounded-pill mobile-cart-bar-btn"
-            onClick={() => setMobileCartOpen(true)}
+            onClick={() => setCartDrawerOpen(true)}
           >
             Sepeti Onayla ➔
           </button>
         </aside>
       ) : null}
 
-      {/* Mobil Checkout Çekmecesi (Bottom Sheet) */}
-      {mobileCartOpen ? (
+      {/* Ortak Sepet & Checkout Çekmecesi (PC'de Sağdan Slide-Over, Mobilde Alttan Bottom Sheet) */}
+      {cartDrawerOpen ? (
         <div
-          className="mobile-cart-drawer-backdrop"
-          onClick={() => setMobileCartOpen(false)}
+          className="cart-drawer-backdrop"
+          onClick={() => setCartDrawerOpen(false)}
           aria-modal="true"
           role="dialog"
         >
           <div
-            className="mobile-cart-drawer"
+            className="cart-drawer-panel"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mobile-cart-drawer-header">
+            <div className="cart-drawer-header">
               <button
                 type="button"
                 className="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1"
-                onClick={() => setMobileCartOpen(false)}
+                onClick={() => setCartDrawerOpen(false)}
               >
                 <span>←</span> Menüye Dön
               </button>
-              <h3 className="h6 mb-0 fw-bold">Sepetim ({mobileCount})</h3>
+              <h3 className="h5 mb-0 fw-bold">Sepetim ({mobileCount})</h3>
               <button
                 type="button"
                 className="btn-close"
-                onClick={() => setMobileCartOpen(false)}
+                onClick={() => setCartDrawerOpen(false)}
                 aria-label="Kapat"
               />
             </div>
 
-            <div className="mobile-cart-drawer-body">
+            <div className="cart-drawer-body">
               <CartPanel
                 lines={cart}
                 onQuantityChange={handleQuantityChange}
                 onNoteChange={handleNoteChange}
                 onRemove={handleRemove}
-                isMobileDrawer
               >
                 <CheckoutForm
                   key={formVersion}

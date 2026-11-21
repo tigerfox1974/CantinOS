@@ -127,10 +127,81 @@ a {
   border-bottom: 1px solid rgba(226, 233, 241, 0.85);
 }
 
+.menu-nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
 .menu-search-wrapper {
   position: relative;
-  margin-bottom: 10px;
+  flex: 1;
   max-width: 480px;
+}
+
+.nav-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ob-line);
+  background: #ffffff;
+  color: var(--ob-ink);
+  font-weight: 600;
+  font-size: 0.92rem;
+  box-shadow: 0 2px 8px rgba(31, 45, 61, 0.05);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-cart-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(31, 45, 61, 0.08);
+}
+
+.nav-cart-btn.has-items {
+  background: linear-gradient(135deg, #1f7fa8 0%, #2fa4d9 100%);
+  border-color: #1f7fa8;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(31, 127, 168, 0.35);
+}
+
+.nav-cart-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.nav-cart-label {
+  font-weight: 600;
+}
+
+.nav-cart-count {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #edf2f7;
+  color: #4a5d6e;
+  transition: all 0.18s ease;
+}
+
+.nav-cart-btn.has-items .nav-cart-count {
+  background: rgba(255, 255, 255, 0.26);
+  color: #ffffff;
+}
+
+.nav-cart-total {
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .menu-search-input-group {
@@ -306,10 +377,8 @@ a {
 }
 
 .customer-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 24px;
-  align-items: start;
+  display: block;
+  width: 100%;
 }
 
 .product-grid {
@@ -1336,16 +1405,74 @@ a {
   }
 }
 
-/* ---------------- Mobil Yüzen Sepet Çubuğu & Checkout Drawer ---------------- */
+/* ---------------- Sepet & Checkout Çekmecesi (PC Slide-Over & Mobil Bottom Sheet) ---------------- */
 .mobile-cart-bar {
   display: none;
 }
 
-.mobile-cart-drawer-backdrop {
-  display: none;
+.cart-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: flex-end; /* PC: Sağa yaslı (Slide-Over Drawer) */
+  align-items: stretch;
+  animation: drawer-fade-in 0.2s ease-out;
+}
+
+.cart-drawer-panel {
+  width: 480px;
+  max-width: 100vw;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: drawer-slide-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cart-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--ob-line);
+  background: #f8fafc;
+}
+
+.cart-drawer-body {
+  padding: 20px 22px calc(24px + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+@keyframes drawer-slide-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 992px) {
+  .nav-cart-btn {
+    display: none;
+  }
+
   .mobile-cart-bar {
     display: flex;
     position: fixed;
@@ -1387,46 +1514,28 @@ a {
     box-shadow: 0 4px 14px rgba(31, 127, 168, 0.35);
   }
 
-  .mobile-cart-drawer-backdrop {
-    display: flex;
-    position: fixed;
-    inset: 0;
-    z-index: 1050;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    justify-content: center;
+  .cart-drawer-backdrop {
     align-items: flex-end;
-    animation: mobile-fade-in 0.2s ease-out;
+    justify-content: center;
   }
 
-  .mobile-cart-drawer {
+  .cart-drawer-panel {
     width: 100%;
     max-width: 560px;
+    height: auto;
     max-height: 88vh;
-    background: #ffffff;
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
     animation: mobile-drawer-up 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .mobile-cart-drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .cart-drawer-header {
     padding: 14px 18px;
-    border-bottom: 1px solid var(--ob-line);
-    background: #f8fafc;
   }
 
-  .mobile-cart-drawer-body {
+  .cart-drawer-body {
     padding: 16px 18px calc(24px + env(safe-area-inset-bottom, 0px));
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -1445,14 +1554,5 @@ a {
   }
   to {
     transform: translateY(0);
-  }
-}
-
-@keyframes mobile-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
