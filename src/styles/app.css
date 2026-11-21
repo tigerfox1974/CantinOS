@@ -322,12 +322,30 @@ a {
   gap: 28px;
 }
 
-.waiting-column h2 {
-  font-size: 1.05rem;
-  letter-spacing: 0.12em;
+.waiting-column h2,
+.waiting-column-title {
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px 16px;
+  border-radius: 14px;
+}
+
+.waiting-column-title.is-preparing-title {
+  color: #ffd28a;
+  background: rgba(240, 173, 78, 0.12);
+  border: 1px solid rgba(240, 173, 78, 0.35);
+  text-shadow: 0 0 20px rgba(240, 173, 78, 0.4);
+}
+
+.waiting-column-title.is-ready-title {
+  color: #b7f0b7;
+  background: rgba(92, 184, 92, 0.14);
+  border: 1px solid rgba(92, 184, 92, 0.4);
+  text-shadow: 0 0 20px rgba(92, 184, 92, 0.5);
 }
 
 .waiting-numbers {

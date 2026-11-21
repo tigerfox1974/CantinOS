@@ -37,17 +37,20 @@ export function WaitingDisplayPage() {
   return (
     <div className="waiting-screen">
       <header className="waiting-header">
-        <div className="d-flex align-items-center gap-3">
+        <div className="d-flex align-items-center gap-3 gap-md-4">
           <img
             src="/CantinOS_anim.gif"
             alt="CantinOS"
-            style={{ height: '52px', width: 'auto', borderRadius: '8px', objectFit: 'contain' }}
+            style={{
+              height: '96px',
+              width: 'auto',
+              borderRadius: '14px',
+              objectFit: 'contain',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+            }}
           />
           <div>
-            <p className="text-uppercase small mb-0" style={{ letterSpacing: '0.18em', color: 'rgba(255,255,255,0.6)' }}>
-              CantinOS
-            </p>
-            <h1 className="h2 fw-bold mb-0">Sipariş Ekranı</h1>
+            <h1 className="display-6 fw-bold mb-0 text-white">Siparişler</h1>
           </div>
         </div>
         <div className="text-end">
@@ -94,9 +97,9 @@ export function WaitingDisplayPage() {
       ) : (
         <div className="waiting-grid">
           <section className="waiting-column" aria-label="Hazırlanıyor">
-            <h2>Hazırlanıyor</h2>
+            <h2 className="waiting-column-title is-preparing-title">Hazırlanıyor</h2>
             {preparing.length === 0 ? (
-              <p className="small mb-0" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              <p className="text-center small mb-0 py-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
                 Bekleyen sipariş yok
               </p>
             ) : (
@@ -111,9 +114,9 @@ export function WaitingDisplayPage() {
           </section>
 
           <section className="waiting-column" aria-label="Hazır">
-            <h2>Hazır</h2>
+            <h2 className="waiting-column-title is-ready-title">Hazır</h2>
             {ready.length === 0 ? (
-              <p className="small mb-0" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              <p className="text-center small mb-0 py-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
                 Hazır sipariş yok
               </p>
             ) : (
@@ -128,10 +131,6 @@ export function WaitingDisplayPage() {
           </section>
         </div>
       )}
-
-      <p className="text-center mt-5 mb-0" style={{ color: 'rgba(255,255,255,0.5)' }}>
-        Numaranız “Hazır” bölümünde göründüğünde siparişinizi teslim alabilirsiniz.
-      </p>
     </div>
   )
 }
