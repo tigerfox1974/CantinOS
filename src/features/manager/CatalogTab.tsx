@@ -253,6 +253,9 @@ export function CatalogTab({ token }: { token: string }) {
                           className={category.isArchived ? 'text-body-secondary' : undefined}
                         >
                           <td>
+                            <span className="me-2" style={{ fontSize: '1.25rem' }} aria-hidden="true">
+                              {category.icon || '📁'}
+                            </span>
                             <span className="fw-semibold">{category.name}</span>
                           </td>
                           <td className="text-tabular">{category.sortOrder}</td>
@@ -456,6 +459,17 @@ export function CatalogTab({ token }: { token: string }) {
                               style={{ maxWidth: 280 }}
                             >
                               {product.description}
+                            </div>
+                          ) : null}
+                          {product.quickModifiers && product.quickModifiers.length > 0 ? (
+                            <div className="mt-1">
+                              <span
+                                className="badge bg-light text-primary border"
+                                title={`Seçenekler: ${product.quickModifiers.join(', ')}`}
+                                style={{ fontSize: '0.73rem', fontWeight: 500 }}
+                              >
+                                🏷️ {product.quickModifiers.length} seçenek
+                              </span>
                             </div>
                           ) : null}
                         </td>

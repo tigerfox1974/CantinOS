@@ -7,6 +7,7 @@ create table if not exists public.categories (
   name text not null,
   sort_order integer not null default 0,
   is_archived boolean not null default false,
+  icon text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -29,6 +30,7 @@ create table if not exists public.products (
   availability_note text,
   availability_note_public boolean not null default true,
   availability_changed_at timestamptz,
+  quick_modifiers text[] not null default '{}'::text[],
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint products_closed_note_check

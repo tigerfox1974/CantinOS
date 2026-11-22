@@ -278,7 +278,7 @@ export function CustomerPage() {
                     }}
                   >
                     <span className="category-pill-icon" aria-hidden="true">
-                      {getCategoryIcon(category.name)}
+                      {category.icon || getCategoryIcon(category.name)}
                     </span>
                     <span className="category-pill-name">{category.name}</span>
                     <span className="category-pill-count">{category.products.length}</span>

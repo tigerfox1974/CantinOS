@@ -8,6 +8,33 @@ import { parsePriceInput, parseSortOrderInput } from './formUtils'
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024
 const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg']
 
+const MODIFIER_PRESETS = [
+  {
+    label: '🥪 Tost / Sandviç',
+    items: ['Domatessiz', 'Ketçapsız', 'Mayonezsiz', 'Acılı', 'İyi Pişmiş'],
+  },
+  {
+    label: '🥗 Soğuk Sandviç',
+    items: ['Domatessiz', 'Mayonezsiz', 'Mısırsız', 'Yeşilliksiz', 'Turşusuz'],
+  },
+  {
+    label: '🥤 Soğuk İçecek',
+    items: ['Soğuk', 'Oda Sıcaklığı', 'Pipetli', 'Buzlu'],
+  },
+  {
+    label: '☕ Sıcak İçecek',
+    items: ['Şekersiz', 'Az Şekerli', 'Orta', 'Şekerli', 'Sütlü'],
+  },
+  {
+    label: '🥐 Hamur İşi / Fırın',
+    items: ['Isıtılsın', 'Peynirli', 'Zeytinli', 'Çıtır', 'Paket'],
+  },
+  {
+    label: '📦 Paket / Servis',
+    items: ['Paket Olsun', 'Ayrı Paket', 'Çatallı', 'Peçeteli'],
+  },
+]
+
 interface ProductFormModalProps {
   token: string
   product: AdminProduct | null
@@ -42,6 +69,8 @@ export function ProductFormModal({
   )
   const [sortText, setSortText] = useState(String(product?.sortOrder ?? 0))
   const [imageUrl, setImageUrl] = useState<string | null>(product?.imageUrl ?? null)
+  const [modifiers, setModifiers] = useState<string[]>(product?.quickModifiers ?? [])
+  const [newModText, setNewModText] = useState('')
   const [imageUploading, setImageUploading] = useState(false)
   const [imageError, setImageError] = useState<string | null>(null)
   const [errors, setErrors] = useState<ProductFormErrors>({})
@@ -131,6 +160,7 @@ export function ProductFormModal({
         imageUrl,
         sortOrder,
         availabilityStatus: product?.availabilityStatus ?? 'ACTIVE',
+        quickModifiers: modifiers,
       }
       if (product) payload.id = product.id
 
@@ -141,6 +171,23 @@ export function ProductFormModal({
     } finally {
       setSaving(false)
     }
+  }
+
+  function handleAddModifier() {
+    const trimmed = newModText.trim()
+    if (!trimmed) return
+    if (!modifiers.includes(trimmed)) {
+      setModifiers((current) => [...current, trimmed])
+    }
+    setNewModText('')
+  }
+
+  function handleRemoveModifier(indexToRemove: number) {
+    setModifiers((current) => current.filter((_, idx) => idx !== indexToRemove))
+  }
+
+  function handleApplyPreset(items: string[]) {
+    setModifiers((current) => Array.from(new Set([...current, ...items])))
   }
 
   return (
@@ -268,6 +315,111 @@ export function ProductFormModal({
                 <div className="form-text">İsteğe bağlı, en fazla 1000 karakter.</div>
               )}
               <div className="form-text">{description.length}/1000</div>
+            </div>
+          </div>
+
+          {/* Hızlı Seçenekler / Servis Notları (Quick Modifiers) */}
+          <div className="col-12">
+            <div className="p-3 border rounded-3 bg-light">
+              <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                <div>
+                  <label className="form-label fw-semibold mb-0" style={{ fontSize: '0.95rem' }}>
+                    🏷️ Sipariş & Servis Seçenekleri (Hazır Notlar / Modifiers)
+                  </label>
+                  <div className="form-text mt-0">
+                    Kasada ve online menüde ürün seçildiğinde tek tıkla eklenebilecek seçenekler.
+                  </div>
+                </div>
+                {modifiers.length > 0 ? (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => setModifiers([])}
+                  >
+                    Tümünü Temizle
+                  </button>
+                ) : null}
+              </div>
+
+              {/* Hızlı Şablonlar */}
+              <div className="mb-3">
+                <span className="small text-muted d-block mb-1 fw-medium">Hızlı Şablonlardan Ekle:</span>
+                <div className="d-flex flex-wrap gap-1">
+                  {MODIFIER_PRESETS.map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      className="btn btn-sm btn-outline-secondary"
+                      style={{ fontSize: '0.78rem', padding: '3px 8px' }}
+                      onClick={() => handleApplyPreset(preset.items)}
+                      title={`${preset.items.join(', ')} ekle`}
+                    >
+                      + {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Aktif Seçenek Rozetleri */}
+              <div className="mb-3">
+                <span className="small text-muted d-block mb-1 fw-medium">
+                  Atanmış Seçenekler ({modifiers.length}):
+                </span>
+                {modifiers.length === 0 ? (
+                  <div className="small text-muted fst-italic py-1">
+                    Bu ürüne henüz özel servis seçeneği atanmadı. Yukarıdaki şablonlardan ekleyebilir veya alttaki kutudan özel seçenek yazabilirsiniz.
+                  </div>
+                ) : (
+                  <div className="d-flex flex-wrap gap-2 py-1">
+                    {modifiers.map((mod, idx) => (
+                      <span
+                        key={`${mod}-${idx}`}
+                        className="badge bg-white text-dark border d-inline-flex align-items-center gap-1 shadow-sm px-2 py-1"
+                        style={{ fontSize: '0.85rem' }}
+                      >
+                        <span>{mod}</span>
+                        <button
+                          type="button"
+                          className="btn-close ms-1"
+                          style={{ fontSize: '0.65rem' }}
+                          aria-label={`${mod} seçeneğini kaldır`}
+                          onClick={() => handleRemoveModifier(idx)}
+                        />
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Yeni Seçenek Ekleme Girişi */}
+              <div className="row g-2 align-items-center">
+                <div className="col-12 col-sm-8 col-md-9">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="Özel seçenek yazın (örn: Acısız, Çift Peynir, Bol Soslu)..."
+                    value={newModText}
+                    maxLength={40}
+                    onChange={(e) => setNewModText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        handleAddModifier()
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col-12 col-sm-4 col-md-3">
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-primary w-100"
+                    onClick={handleAddModifier}
+                    disabled={!newModText.trim()}
+                  >
+                    + Seçenek Ekle
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -325,7 +325,7 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
                       }}
                     >
                       <span className="category-pill-icon" aria-hidden="true">
-                        {getCategoryIcon(category.name)}
+                        {category.icon || getCategoryIcon(category.name)}
                       </span>
                       <span className="category-pill-name">{category.name}</span>
                       <span className="category-pill-count">{category.products.length}</span>
@@ -450,7 +450,11 @@ export function NewOrderPanel({ token, menu, loading = false, onCreated }: NewOr
           ) : (
             <div className="pos-cart-list mb-2">
               {cart.map((line) => {
-                const quickMods = getProductQuickModifiers(line.productName)
+                const product = allProducts.find((p) => p.id === line.productId)
+                const quickMods =
+                  product?.quickModifiers && product.quickModifiers.length > 0
+                    ? product.quickModifiers
+                    : getProductQuickModifiers(line.productName)
 
                 return (
                   <div className="cart-line" key={line.key}>

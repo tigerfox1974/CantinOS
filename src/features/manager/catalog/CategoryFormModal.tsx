@@ -18,6 +18,8 @@ interface CategoryFormErrors {
   sortOrder?: string
 }
 
+const PRESET_ICONS = ['🥪', '🥤', '☕', '🥐', '🍟', '🍰', '🍕', '🍲', '🥗', '🍫', '✨']
+
 export function CategoryFormModal({
   token,
   category,
@@ -28,6 +30,7 @@ export function CategoryFormModal({
   const suggestedSort = categories.reduce((max, item) => Math.max(max, item.sortOrder), 0) + 10
   const [name, setName] = useState(category?.name ?? '')
   const [sortText, setSortText] = useState(String(category?.sortOrder ?? suggestedSort))
+  const [icon, setIcon] = useState(category?.icon ?? '🥪')
   const [errors, setErrors] = useState<CategoryFormErrors>({})
   const [serverError, setServerError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -54,7 +57,11 @@ export function CategoryFormModal({
     setBusy(true)
     setServerError(null)
     try {
-      const payload: CategoryInput = { name: trimmedName, sortOrder }
+      const payload: CategoryInput = {
+        name: trimmedName,
+        sortOrder,
+        icon: icon.trim() || null,
+      }
       if (category) {
         payload.id = category.id
         await staffAdminApi.manageCategory(token, 'UPDATE', payload)
@@ -114,6 +121,39 @@ export function CategoryFormModal({
           ) : (
             <div className="form-text">2 ile 80 karakter arasında.</div>
           )}
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label d-block">
+            Kategori Simgesi (Emoji)
+          </label>
+          <div className="d-flex flex-wrap gap-2 mb-2">
+            {PRESET_ICONS.map((emoji) => (
+              <button
+                key={emoji}
+                type="button"
+                className={`btn btn-sm ${icon === emoji ? 'btn-primary' : 'btn-outline-secondary'}`}
+                style={{ fontSize: '1.2rem', padding: '4px 10px' }}
+                onClick={() => setIcon(emoji)}
+                title={`Simge: ${emoji}`}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+          <div className="input-group" style={{ maxWidth: 200 }}>
+            <span className="input-group-text">{icon || '🍴'}</span>
+            <input
+              type="text"
+              className="form-control"
+              value={icon}
+              maxLength={8}
+              placeholder="Örn: 🥪"
+              onChange={(e) => setIcon(e.target.value)}
+              title="Özel bir emoji veya simge yazabilirsiniz"
+            />
+          </div>
+          <div className="form-text">Menü ve kasa sekmelerinde kategori adının yanında gösterilir.</div>
         </div>
 
         <div className="mb-0">

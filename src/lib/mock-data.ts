@@ -39,10 +39,10 @@ export const INITIAL_STAFF_ACCOUNTS: MockStaffAccount[] = [
 ]
 
 export const INITIAL_CATEGORIES: AdminCategory[] = [
-  { id: 'cat-1', name: 'Tost & Sandviç', sortOrder: 10, isArchived: false, productCount: 3 },
-  { id: 'cat-2', name: 'İçecekler', sortOrder: 20, isArchived: false, productCount: 3 },
-  { id: 'cat-3', name: 'Atıştırmalık', sortOrder: 30, isArchived: false, productCount: 2 },
-  { id: 'cat-4', name: 'Tatlı', sortOrder: 40, isArchived: false, productCount: 2 },
+  { id: 'cat-1', name: 'Tost & Sandviç', sortOrder: 10, isArchived: false, productCount: 3, icon: '🥪' },
+  { id: 'cat-2', name: 'İçecekler', sortOrder: 20, isArchived: false, productCount: 3, icon: '🥤' },
+  { id: 'cat-3', name: 'Atıştırmalık', sortOrder: 30, isArchived: false, productCount: 2, icon: '🍟' },
+  { id: 'cat-4', name: 'Tatlı', sortOrder: 40, isArchived: false, productCount: 2, icon: '🍰' },
 ]
 
 export const INITIAL_PRODUCTS: AdminProduct[] = [
@@ -58,6 +58,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Domatessiz', 'Ketçapsız', 'Mayonezsiz', 'Acılı', 'İyi Pişmiş'],
   },
   {
     id: 'prod-2',
@@ -71,6 +72,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Domatessiz', 'Ketçapsız', 'Mayonezsiz', 'Acılı', 'İyi Pişmiş'],
   },
   {
     id: 'prod-3',
@@ -84,6 +86,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Domatessiz', 'Mayonezsiz', 'Mısırsız', 'Yeşilliksiz', 'Turşusuz'],
   },
   {
     id: 'prod-4',
@@ -97,6 +100,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Soğuk', 'Oda Sıcaklığı', 'Pipetli'],
   },
   {
     id: 'prod-5',
@@ -110,6 +114,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Soğuk', 'Oda Sıcaklığı', 'Pipetli'],
   },
   {
     id: 'prod-6',
@@ -123,6 +128,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Soğuk', 'Oda Sıcaklığı'],
   },
   {
     id: 'prod-7',
@@ -136,6 +142,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Isıtılsın', 'Peynirli', 'Zeytinli', 'Çıtır', 'Paket'],
   },
   {
     id: 'prod-8',
@@ -149,6 +156,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Isıtılsın', 'Peynirli', 'Paket'],
   },
   {
     id: 'prod-9',
@@ -162,6 +170,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Paket Olsun', 'Isıtılsın'],
   },
   {
     id: 'prod-10',
@@ -175,6 +184,7 @@ export const INITIAL_PRODUCTS: AdminProduct[] = [
     availabilityStatus: 'ACTIVE',
     availabilityNote: null,
     availabilityNotePublic: false,
+    quickModifiers: ['Paket Olsun'],
   },
 ]
 

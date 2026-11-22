@@ -184,12 +184,14 @@ export async function mockRpc<T>(name: string, params: Record<string, unknown> =
                 p.availabilityStatus === 'CLOSED' && p.availabilityNotePublic
                   ? p.availabilityNote
                   : null,
+              quickModifiers: p.quickModifiers ?? [],
             }))
 
           return {
             id: cat.id,
             name: cat.name,
             sortOrder: cat.sortOrder,
+            icon: cat.icon ?? null,
             products: prods,
           }
         })
@@ -935,22 +937,27 @@ export async function mockRpc<T>(name: string, params: Record<string, unknown> =
           sortOrder: payload.sortOrder ?? 10,
           isArchived: false,
           productCount: 0,
+          icon: payload.icon ?? null,
         }
         store.categories.push(newCat)
         persistStore()
+        notifyLiveSync()
         return { id } as T
       } else if (action === 'UPDATE') {
         const cat = store.categories.find((c) => c.id === payload.id)
         if (!cat) throw new AppError('Kategori bulunamadı.')
         cat.name = payload.name
         if (payload.sortOrder !== undefined) cat.sortOrder = payload.sortOrder
+        if (payload.icon !== undefined) cat.icon = payload.icon
         persistStore()
+        notifyLiveSync()
         return { id: cat.id } as T
       } else if (action === 'ARCHIVE') {
         const cat = store.categories.find((c) => c.id === payload.id)
         if (!cat) throw new AppError('Kategori bulunamadı.')
         cat.isArchived = true
         persistStore()
+        notifyLiveSync()
         return { id: cat.id } as T
       }
       return { id: payload.id || 'ok' } as T
@@ -979,7 +986,9 @@ export async function mockRpc<T>(name: string, params: Record<string, unknown> =
         existing.sortOrder = p.sortOrder ?? 10
         if (p.imageUrl !== undefined) existing.imageUrl = p.imageUrl
         if (p.availabilityStatus) existing.availabilityStatus = p.availabilityStatus
+        if (p.quickModifiers !== undefined) existing.quickModifiers = p.quickModifiers
         persistStore()
+        notifyLiveSync()
         return { id: existing.id } as T
       } else {
         const id = `prod-${Date.now()}`
@@ -995,9 +1004,11 @@ export async function mockRpc<T>(name: string, params: Record<string, unknown> =
           availabilityStatus: p.availabilityStatus ?? 'ACTIVE',
           availabilityNote: null,
           availabilityNotePublic: false,
+          quickModifiers: p.quickModifiers ?? [],
         }
         store.products.push(newProd)
         persistStore()
+        notifyLiveSync()
         return { id } as T
       }
     }

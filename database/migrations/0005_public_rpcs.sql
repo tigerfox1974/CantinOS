@@ -19,6 +19,7 @@ as $$
             'id', c.id,
             'name', c.name,
             'sortOrder', c.sort_order,
+            'icon', c.icon,
             'products', coalesce((
               select jsonb_agg(
                 jsonb_build_object(
@@ -29,6 +30,7 @@ as $$
                   'imageUrl', p.image_url,
                   'sortOrder', p.sort_order,
                   'availabilityStatus', p.availability_status,
+                  'quickModifiers', coalesce(p.quick_modifiers, '{}'::text[]),
                   'availabilityNote',
                     case
                       when p.availability_status = 'CLOSED' and p.availability_note_public then p.availability_note

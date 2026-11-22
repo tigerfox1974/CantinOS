@@ -40,12 +40,14 @@ export interface MenuProduct {
   sortOrder: number
   availabilityStatus: AvailabilityStatus
   availabilityNote: string | null
+  quickModifiers?: string[]
 }
 
 export interface MenuCategory {
   id: string
   name: string
   sortOrder: number
+  icon?: string | null
   products: MenuProduct[]
 }
 
@@ -212,12 +214,14 @@ export interface ProductInput {
   imageUrl?: string | null
   sortOrder?: number
   availabilityStatus?: AvailabilityStatus
+  quickModifiers?: string[]
 }
 
 export interface CategoryInput {
   id?: string
   name: string
   sortOrder?: number
+  icon?: string | null
 }
 
 export interface DeliverySlotInput {
@@ -267,6 +271,7 @@ export interface AdminCategory {
   sortOrder: number
   isArchived: boolean
   productCount: number
+  icon?: string | null
 }
 
 export interface AdminProduct {
@@ -281,6 +286,7 @@ export interface AdminProduct {
   availabilityStatus: AvailabilityStatus
   availabilityNote: string | null
   availabilityNotePublic: boolean
+  quickModifiers?: string[]
 }
 
 export interface AdminDeliverySlot {

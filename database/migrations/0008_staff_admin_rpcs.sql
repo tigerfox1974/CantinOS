@@ -87,6 +87,7 @@ declare
   v_status text := upper(coalesce(nullif(p_product ->> 'availabilityStatus', ''), 'ACTIVE'));
   v_note text := nullif(btrim(coalesce(p_product ->> 'availabilityNote', '')), '');
   v_note_public boolean := coalesce((p_product ->> 'availabilityNotePublic')::boolean, true);
+  v_quick_modifiers text[] := coalesce((select array_agg(elem) from jsonb_array_elements_text(coalesce(p_product -> 'quickModifiers', '[]'::jsonb)) elem), '{}'::text[]);
   v_category public.categories;
 begin
   if length(v_name) < 2 or length(v_name) > 120 then
@@ -150,6 +151,7 @@ begin
            image_url = v_image_url,
            sort_order = v_sort,
            availability_status = v_status,
+           quick_modifiers = case when p_product ? 'quickModifiers' then v_quick_modifiers else quick_modifiers end,
            availability_note = case when v_status = 'CLOSED' then v_note else null end,
            availability_note_public = case when v_status = 'CLOSED' then v_note_public else true end,
            availability_changed_at = case when availability_status <> v_status then now() else availability_changed_at end
@@ -164,12 +166,14 @@ begin
 
   insert into public.products (
     category_id, name, description, price, image_url, sort_order,
-    availability_status, availability_note, availability_note_public, availability_changed_at
+    availability_status, availability_note, availability_note_public, availability_changed_at,
+    quick_modifiers
   ) values (
     v_category_id, v_name, v_description, v_price, v_image_url, v_sort,
     v_status, case when v_status = 'CLOSED' then v_note else null end,
     case when v_status = 'CLOSED' then v_note_public else true end,
-    now()
+    now(),
+    v_quick_modifiers
   )
   returning id into v_id;
 
@@ -193,6 +197,7 @@ declare
   v_id_text text := nullif(btrim(coalesce(p_category ->> 'id', '')), '');
   v_id uuid;
   v_name text := btrim(coalesce(p_category ->> 'name', ''));
+  v_icon text := nullif(btrim(coalesce(p_category ->> 'icon', '')), '');
   v_sort integer;
 begin
   if v_action not in ('CREATE', 'UPDATE', 'ARCHIVE', 'REORDER') then
@@ -205,7 +210,7 @@ begin
     end if;
     v_sort := coalesce((p_category ->> 'sortOrder')::integer, (select coalesce(max(sort_order), 0) + 10 from public.categories));
 
-    insert into public.categories (name, sort_order) values (v_name, v_sort)
+    insert into public.categories (name, sort_order, icon) values (v_name, v_sort, v_icon)
     returning id into v_id;
 
     return jsonb_build_object('id', v_id);
@@ -240,7 +245,8 @@ begin
 
   update public.categories
      set name = v_name,
-         sort_order = coalesce((p_category ->> 'sortOrder')::integer, sort_order)
+         sort_order = coalesce((p_category ->> 'sortOrder')::integer, sort_order),
+         icon = case when p_category ? 'icon' then v_icon else icon end
    where id = v_id;
 
   return jsonb_build_object('id', v_id);
