@@ -114,14 +114,16 @@ export function usePolling<T>(
     }
   }, [enabled, intervalMs, run])
 
+  const refresh = useCallback(() => {
+    invalidateStore()
+    return run(true)
+  }, [run])
+
   return {
     data,
     error,
     loading,
-    refresh: () => {
-      invalidateStore()
-      return run(true)
-    },
+    refresh,
     lastUpdatedAt,
   }
 }

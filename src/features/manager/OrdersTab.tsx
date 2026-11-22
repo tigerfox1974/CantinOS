@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, ReasonDialog } from '../../components/Dialogs'
 import { EmptyState, ErrorAlert, LoadingBlock, PageHeader } from '../../components/Feedback'
 import { staffOrderApi } from '../../lib/api'
@@ -43,8 +43,11 @@ export function OrdersTab({ token }: { token: string }) {
   )
   const { data, error, loading, refresh, lastUpdatedAt } = usePolling(loader)
 
+  const filterRef = useRef({ mode, search })
   // Filtre değişince beklemeden yeniden yükle.
   useEffect(() => {
+    if (filterRef.current.mode === mode && filterRef.current.search === search) return
+    filterRef.current = { mode, search }
     void refresh()
   }, [mode, search, refresh])
 
