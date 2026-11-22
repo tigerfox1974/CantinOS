@@ -247,6 +247,11 @@ export function CatalogTab({ token }: { token: string }) {
                       const rowBusy = busyKey !== null
                       const movingUp = busyKey === `category:${category.id}:-1`
                       const movingDown = busyKey === `category:${category.id}:1`
+                      const liveCount = products.length > 0
+                        ? products.filter(
+                            (p) => p.categoryId === category.id && p.availabilityStatus !== 'ARCHIVED',
+                          ).length
+                        : category.productCount
                       return (
                         <tr
                           key={category.id}
@@ -259,7 +264,7 @@ export function CatalogTab({ token }: { token: string }) {
                             <span className="fw-semibold">{category.name}</span>
                           </td>
                           <td className="text-tabular">{category.sortOrder}</td>
-                          <td className="text-tabular">{category.productCount}</td>
+                          <td className="text-tabular">{liveCount}</td>
                           <td>
                             {category.isArchived ? (
                               <span className="badge text-bg-secondary">Arşivde</span>

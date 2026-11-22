@@ -921,7 +921,13 @@ export async function mockRpc<T>(name: string, params: Record<string, unknown> =
 
     case 'staff_categories_admin': {
       resolveStaff(String(params.p_token || ''))
-      return store.categories as T
+      const categories: AdminCategory[] = store.categories.map((cat) => ({
+        ...cat,
+        productCount: store.products.filter(
+          (p) => p.categoryId === cat.id && p.availabilityStatus !== 'ARCHIVED',
+        ).length,
+      }))
+      return categories as T
     }
 
     case 'staff_manage_category': {
