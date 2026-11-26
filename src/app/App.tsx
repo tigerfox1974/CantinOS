@@ -1,4 +1,5 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { DemoBadge } from '../components/DemoBadge'
 import { ConfigMissing } from '../components/Feedback'
@@ -11,6 +12,44 @@ import { RequireRole } from '../features/staff-auth/RequireRole'
 import { KitchenPage } from '../features/kitchen/KitchenPage'
 import { CashierPage } from '../features/cashier/CashierPage'
 import { ManagerPage } from '../features/manager/ManagerPage'
+
+function DocumentTitle({ configMissing }: { configMissing: boolean }) {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    if (configMissing) {
+      document.title = 'CantinOS - Yapılandırma Hatası'
+      return
+    }
+
+    const normalizedPath = pathname.replace(/\/+$/, '') || '/'
+
+    if (normalizedPath === '/') {
+      document.title = 'CantinOS'
+      return
+    }
+
+    if (normalizedPath.startsWith('/takip/')) {
+      const orderNumber = normalizedPath.split('/')[2]
+      document.title = /^\d+$/.test(orderNumber)
+        ? `CantinOS - Sipariş Takibi #${orderNumber}`
+        : 'CantinOS - Sipariş Takibi'
+      return
+    }
+
+    const titles: Record<string, string> = {
+      '/bekleme': 'CantinOS - Bekleme Ekranı',
+      '/personel': 'CantinOS - Personel Girişi',
+      '/personel/mutfak': 'CantinOS - Mutfak',
+      '/personel/kasa': 'CantinOS - Kasa',
+      '/personel/yonetim': 'CantinOS - Yönetim - Genel Bakış',
+    }
+
+    document.title = titles[normalizedPath] ?? 'CantinOS - Sayfa Bulunamadı'
+  }, [configMissing, pathname])
+
+  return null
+}
 
 function NotFound() {
   return (
@@ -25,10 +64,20 @@ function NotFound() {
 }
 
 export function App() {
-  if (!isSupabaseConfigured && !isDemoActive) return <ConfigMissing />
+  const configMissing = !isSupabaseConfigured && !isDemoActive
+
+  if (configMissing) {
+    return (
+      <>
+        <DocumentTitle configMissing />
+        <ConfigMissing />
+      </>
+    )
+  }
 
   return (
     <>
+      <DocumentTitle configMissing={false} />
       {isDemoActive ? <DemoBadge /> : null}
       <Routes>
       <Route path="/" element={<CustomerPage />} />

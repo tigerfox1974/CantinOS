@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LoadingBlock, PageHeader } from '../../components/Feedback'
 import { formatDate, formatTime } from '../../lib/format'
 import { useClock } from '../../lib/polling'
@@ -25,6 +25,11 @@ export function ManagerPage() {
   const { session } = useAuth()
   const [activeTab, setActiveTab] = useState<TabId>('overview')
   const now = useClock(1000)
+
+  useEffect(() => {
+    const activeTabLabel = TABS.find((tab) => tab.id === activeTab)?.label ?? 'Genel Bakış'
+    document.title = `CantinOS - Yönetim - ${activeTabLabel}`
+  }, [activeTab])
 
   if (!session?.token) {
     return <LoadingBlock label="Oturum yükleniyor…" />
