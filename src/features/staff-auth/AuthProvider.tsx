@@ -20,9 +20,15 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+// Demo modunda tek tarayıcıda farklı sekmelerde aynı anda Mutfak/Kasa/Yönetici testi için sessionStorage kullanılır.
+// İleride demo modu tamamen kaldırıldığında doğrudan localStorage'a dönülmelidir (bkz. README.md).
+function getAuthStorage(): Storage {
+  return isDemoActive ? sessionStorage : localStorage
+}
+
 function readStored(): StoredSession | null {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = getAuthStorage().getItem(STORAGE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw) as StoredSession
     if (!parsed?.token || !parsed?.staff?.role) return null
@@ -53,13 +59,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then((staff) => {
         if (!active) return
         const next = { token: stored.token, staff }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+        getAuthStorage().setItem(STORAGE_KEY, JSON.stringify(next))
         setSession(next)
       })
       .catch((error) => {
         logTechnicalError('auth:restore', error)
         if (!active) return
-        localStorage.removeItem(STORAGE_KEY)
+        getAuthStorage().removeItem(STORAGE_KEY)
         setSession(null)
       })
       .finally(() => {
@@ -74,14 +80,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const result = await staffAuthApi.login(email, password)
     const next: StoredSession = { token: result.token, staff: result.staff }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    getAuthStorage().setItem(STORAGE_KEY, JSON.stringify(next))
     setSession(next)
     return result
   }, [])
 
   const logout = useCallback(async () => {
     const current = session
-    localStorage.removeItem(STORAGE_KEY)
+    getAuthStorage().removeItem(STORAGE_KEY)
     setSession(null)
     if (current) {
       try {

@@ -265,6 +265,8 @@ git push -u origin main
 
 > `service_role` anahtarını Vercel'e **eklemeyin**.
 
+> **Önemli Not (Demo Modundan Canlıya Geçişte Oturum Depolama):** Şu an yalnızca yerel demo modunda (`isDemoActive === true`) aynı tarayıcıdaki farklı sekmelerden Mutfak, Kasa ve Yönetici hesaplarının aynı anda test edilebilmesi için `src/features/staff-auth/AuthProvider.tsx` içinde `sessionStorage` kullanılmaktadır; canlı Supabase modunda ise otomatik olarak `localStorage` kullanılır. İleride Vercel + Supabase canlı ortamına geçilip demo modu tamamen kaldırıldığında, `AuthProvider.tsx` içindeki oturum depolama mantığının doğrudan yalnızca `localStorage` kullanacak şekilde sadeleştirilmesi gerekir.
+
 ---
 
 ## 13. Yayın sonrası kontrol listesi
